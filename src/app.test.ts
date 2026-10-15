@@ -14,6 +14,13 @@ describe('renderApp', () => {
     expect(root.querySelector('h1')?.textContent).toBe(APP_TITLE);
   });
 
+  it('يعرض الهدهد المعتمد (الصواعق الهادئة)', () => {
+    renderApp(root, { demo: false });
+    const hudhud = root.querySelector('.hudhud');
+    expect(hudhud?.classList.contains('hudhud--calm')).toBe(true);
+    expect(hudhud?.getAttribute('aria-label')).toBe(APP_TITLE);
+  });
+
   it('يعرض شريط النسخة التجريبية في الأعلى عند وجود بيانات تجريبية', () => {
     renderApp(root, { demo: true });
     const banner = root.firstElementChild;

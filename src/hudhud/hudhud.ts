@@ -4,9 +4,9 @@ import { HUDHUD_FEET, HUDHUD_HEIGHT, HUDHUD_PATH, HUDHUD_WIDTH } from './shape';
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
 /**
- * calm: صواعق هادئة. bright: صواعق أوضح مع شرر. still: بلا حركة (علامة الوجهة على الخريطة).
+ * calm: الهدهد بحركته وصواعقه الهادئة (اختيار الفريق). still: بلا حركة (علامة الوجهة على الخريطة).
  */
-export type HudhudVariant = 'calm' | 'bright' | 'still';
+export type HudhudVariant = 'calm' | 'still';
 
 /** كل دورة تأتي الصاعقة من اتجاه مختلف بهذا الترتيب. */
 export const BOLT_DIRECTIONS = ['top', 'right', 'left'] as const;
@@ -40,22 +40,6 @@ function createBolt(direction: (typeof BOLT_DIRECTIONS)[number]): HTMLElement {
   return wrap;
 }
 
-function createSparks(): HTMLElement {
-  const wrap = document.createElement('div');
-  wrap.className = 'hudhud__sparks';
-  const icon = svg('svg', { viewBox: '-10 -10 20 20', 'aria-hidden': 'true', focusable: 'false' });
-  for (let i = 0; i < 6; i++) {
-    const angle = (i * Math.PI) / 3 + Math.PI / 6;
-    const x1 = (Math.cos(angle) * 4).toFixed(2);
-    const y1 = (Math.sin(angle) * 4).toFixed(2);
-    const x2 = (Math.cos(angle) * 8).toFixed(2);
-    const y2 = (Math.sin(angle) * 8).toFixed(2);
-    icon.append(svg('path', { d: `M${x1} ${y1} L${x2} ${y2}` }));
-  }
-  wrap.append(icon);
-  return wrap;
-}
-
 /**
  * الهدهد بهويته الكاملة: ينقر الأرض مرتين، يرفع رأسه، يلتفت، تضربه صاعقة خفيفة، ثم يعود للنقر.
  * كل الحركات CSS (تحريك وشفافية فقط)، وتتوقف عند تفعيل «تقليل الحركة».
@@ -81,9 +65,6 @@ export function createHudhud(variant: HudhudVariant = 'calm', label = 'هدهد 
 
   if (variant !== 'still') {
     root.append(...BOLT_DIRECTIONS.map(createBolt));
-  }
-  if (variant === 'bright') {
-    root.append(createSparks());
   }
 
   return root;

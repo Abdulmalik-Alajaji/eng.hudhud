@@ -107,6 +107,12 @@ body {
   text-align: center;
 }
 
+.placeholder .placeholder__hudhud {
+  --hudhud-size: min(62vw, 240px);
+  /* مساحة فوق الهدهد لتظهر الصواعق كاملة */
+  margin: 72px 0 16px;
+}
+
 .placeholder h1 {
   margin: 0;
   font-size: clamp(2rem, 9vw, 3.25rem);

@@ -23,11 +23,6 @@
   color: var(--hudhud-color);
 }
 
-.hudhud--bright {
-  --glow-peak: 0.7;
-  --bolt-stroke: 3.2;
-}
-
 .hudhud__bird,
 .hudhud__bird svg {
   position: absolute;
@@ -183,49 +178,6 @@
   23.3%,
   100% {
     opacity: 0;
-  }
-}
-
-/* الشرر عند التاج (الخيار الأوضح فقط) */
-.hudhud__sparks {
-  position: absolute;
-  left: var(--hit-x);
-  top: var(--hit-y);
-  width: 22%;
-  aspect-ratio: 1;
-  translate: -50% -50%;
-  opacity: 0;
-  pointer-events: none;
-  animation: hudhud-sparks 8s ease-out infinite;
-}
-
-.hudhud__sparks svg {
-  display: block;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-}
-
-.hudhud__sparks path {
-  stroke: var(--bolt-halo);
-  stroke-width: 1.4;
-  stroke-linecap: round;
-}
-
-@keyframes hudhud-sparks {
-  0%,
-  65% {
-    opacity: 0;
-    scale: 0.4;
-  }
-  67% {
-    opacity: 1;
-    scale: 1;
-  }
-  73%,
-  100% {
-    opacity: 0;
-    scale: 1.3;
   }
 }
 
