@@ -5,10 +5,11 @@ import type { Plugin } from 'vite';
 // اسم المستودع على GitHub Pages: الموقع يُنشر تحت هذا المسار.
 const BASE = '/eng.hudhud/';
 
-// كل صفحة HTML منفصلة تُضاف هنا (لاحقاً: preview.html و debug.html و admin.html).
+// كل صفحة HTML منفصلة تُضاف هنا (لاحقاً: debug.html و admin.html).
 // لا نستخدم مسارات مثل /admin لأن GitHub Pages يعطي 404 عند فتحها مباشرة.
 const PAGES = {
   main: resolve(import.meta.dirname, 'index.html'),
+  preview: resolve(import.meta.dirname, 'preview.html'),
 };
 
 // سياسة الأمان: المتصفح يرفض أي مورد من خارج الموقع.

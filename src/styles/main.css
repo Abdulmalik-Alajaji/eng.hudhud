@@ -36,25 +36,50 @@
     U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-/* ألوان مؤقتة حتى تُعتمد الهوية في المرحلة 1 */
+/* الألوان: الهدهد كحلي من صورة الفريق، والصواعق كهرماني. الداكن يتبع الجهاز أو اختيار المستخدم (data-theme). */
 :root {
   --bg: #f6f1e7;
+  --surface: #fffaf0;
+  --border: #e3d9c6;
   --text: #1f1a14;
   --muted: #6b6155;
+  --hudhud-color: #173a5e;
+  --bolt-color: #e0a100;
+  --bolt-glow: rgba(242, 183, 5, 0.85);
   --banner-bg: #f2c94c;
   --banner-text: #1f1a14;
   --font: 'IBM Plex Sans Arabic', system-ui, -apple-system, 'Segoe UI', Tahoma, sans-serif;
-  color-scheme: light dark;
+  color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme='light']) {
     --bg: #16130f;
+    --surface: #211d18;
+    --border: #3a332a;
     --text: #f3ede2;
     --muted: #a99f92;
+    --hudhud-color: #9cc0e6;
+    --bolt-color: #ffd34d;
+    --bolt-glow: rgba(255, 211, 77, 0.6);
     --banner-bg: #8a6d12;
     --banner-text: #fff8e6;
+    color-scheme: dark;
   }
+}
+
+:root[data-theme='dark'] {
+  --bg: #16130f;
+  --surface: #211d18;
+  --border: #3a332a;
+  --text: #f3ede2;
+  --muted: #a99f92;
+  --hudhud-color: #9cc0e6;
+  --bolt-color: #ffd34d;
+  --bolt-glow: rgba(255, 211, 77, 0.6);
+  --banner-bg: #8a6d12;
+  --banner-text: #fff8e6;
+  color-scheme: dark;
 }
 
 *,

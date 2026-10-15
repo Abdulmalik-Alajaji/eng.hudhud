@@ -1,0 +1,157 @@
+.preview-header {
+  padding: calc(env(safe-area-inset-top) + 24px) max(16px, env(safe-area-inset-right)) 8px
+    max(16px, env(safe-area-inset-left));
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.preview-header h1 {
+  margin: 0 0 8px;
+  font-size: 1.6rem;
+  line-height: 1.4;
+}
+
+.preview-header p {
+  margin: 0 0 16px;
+  color: var(--muted);
+}
+
+.theme-switch {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 3px;
+  background: var(--surface);
+}
+
+.theme-switch button {
+  font: inherit;
+  font-size: 0.95rem;
+  color: var(--text);
+  background: transparent;
+  border: 0;
+  border-radius: 999px;
+  padding: 6px 16px;
+  min-height: 36px;
+  cursor: pointer;
+}
+
+.theme-switch button[aria-pressed='true'] {
+  background: var(--hudhud-color);
+  color: var(--bg);
+  font-weight: 700;
+}
+
+.preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  gap: 16px;
+  /* داخل حاوية flex عمودية: بدون width يأخذ أقصى عرض بدل عرض الشاشة */
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 16px max(16px, env(safe-area-inset-right)) calc(env(safe-area-inset-bottom) + 32px)
+    max(16px, env(safe-area-inset-left));
+}
+
+.preview-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.preview-card h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.preview-card__stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 260px;
+  /* مساحة فوق الهدهد لتظهر الصواعق كاملة */
+  padding-top: 48px;
+}
+
+.preview-card__note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+/* مثال الخريطة */
+.map-sample {
+  position: relative;
+  width: 100%;
+  max-width: 260px;
+  aspect-ratio: 4 / 3;
+  border-radius: 12px;
+  background-color: var(--bg);
+  background-image: repeating-linear-gradient(0deg, var(--border) 0 1px, transparent 1px 32px),
+    repeating-linear-gradient(90deg, var(--border) 0 1px, transparent 1px 32px);
+  overflow: hidden;
+}
+
+.map-sample__route {
+  position: absolute;
+  inset-inline-start: 18%;
+  top: 22%;
+  width: 56%;
+  height: 52%;
+  border-top: 4px solid var(--hudhud-color);
+  border-inline-start: 4px solid var(--hudhud-color);
+  border-start-start-radius: 6px;
+  opacity: 0.8;
+}
+
+.map-sample__start {
+  position: absolute;
+  inset-inline-start: calc(18% - 7px);
+  top: calc(74% - 7px);
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 4px solid var(--hudhud-color);
+}
+
+.map-sample .map-sample__destination {
+  --hudhud-size: 44px;
+  position: absolute;
+  inset-inline-start: calc(74% - 22px);
+  top: calc(22% - 36px);
+}
+
+.icon-sizes {
+  display: flex;
+  align-items: flex-end;
+  gap: 24px;
+  color: var(--hudhud-color);
+}
+
+.icon-sizes__box svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.icon-sizes__box--16 {
+  width: 16px;
+  height: 16px;
+}
+
+.icon-sizes__box--32 {
+  width: 32px;
+  height: 32px;
+}
+
+.icon-sizes__box--64 {
+  width: 64px;
+  height: 64px;
+}
