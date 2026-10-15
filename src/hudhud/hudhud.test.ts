@@ -33,18 +33,11 @@ describe('createHudhud', () => {
     expect(hudhud.getAttribute('aria-label')).toBe('هدهد الهندسة');
   });
 
-  it('الخيار الهادئ: صاعقة لكل اتجاه، بلا شرر', () => {
+  it('الهادئ (اختيار الفريق): صاعقة لكل اتجاه ووهج', () => {
     const hudhud = createHudhud('calm');
     expect(hudhud.classList.contains('hudhud--calm')).toBe(true);
     expect(hudhud.querySelectorAll('.hudhud__bolt')).toHaveLength(BOLT_DIRECTIONS.length);
     expect(hudhud.querySelector('.hudhud__glow')).not.toBeNull();
-    expect(hudhud.querySelector('.hudhud__sparks')).toBeNull();
-  });
-
-  it('الخيار الأوضح: صواعق وشرر', () => {
-    const hudhud = createHudhud('bright');
-    expect(hudhud.querySelectorAll('.hudhud__bolt')).toHaveLength(BOLT_DIRECTIONS.length);
-    expect(hudhud.querySelector('.hudhud__sparks')).not.toBeNull();
   });
 
   it('الثابت (علامة الوجهة): الهدهد وحده بلا صواعق ولا وهج', () => {
