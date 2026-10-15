@@ -53,10 +53,17 @@ export default defineConfig({
     sourcemap: false,
     rolldownOptions: {
       input: PAGES,
+      output: {
+        // الهوية (الهدهد) في ملف مستقل حتى يُقاس حجمها: scripts/check-build.mjs يفرض ألا تتجاوز 150 كيلوبايت.
+        codeSplitting: {
+          groups: [{ name: 'hudhud', test: /[\\/]src[\\/]hudhud[\\/]/ }],
+        },
+      },
     },
   },
   test: {
     environment: 'jsdom',
+    setupFiles: ['src/test-setup.ts'],
     include: ['src/**/*.test.ts', 'scripts/**/*.test.mjs'],
   },
 });

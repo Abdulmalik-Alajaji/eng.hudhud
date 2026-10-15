@@ -30,6 +30,8 @@
 }
 
 .preview-card {
+  /* الصواعق تأتي من خارج الهدهد: تُقص عند حدود البطاقة */
+  overflow: hidden;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 16px;
@@ -48,9 +50,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 260px;
-  /* مساحة فوق الهدهد لتظهر الصواعق كاملة */
-  padding-top: 48px;
+  min-height: 300px;
+  /* مساحة فوق الهدهد لتظهر الصواعق القادمة من الأعلى */
+  padding-top: 90px;
 }
 
 .preview-card__note {
