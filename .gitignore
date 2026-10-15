@@ -1,0 +1,13 @@
+node_modules/
+dist/
+coverage/
+
+# الأسرار لا تُرفع أبداً
+.env
+.env.*
+*.local
+*.pem
+*.key
+
+.DS_Store
+Thumbs.db
