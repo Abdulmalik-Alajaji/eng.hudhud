@@ -36,25 +36,21 @@
     U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-/* ألوان مؤقتة حتى تُعتمد الهوية في المرحلة 1 */
+/* الهوية: خلفية سوداء بالكامل، هدهد أزرق سماوي، صواعق زرقاء بتوهج أبيض. مظهر واحد للموقع كله. */
 :root {
-  --bg: #f6f1e7;
-  --text: #1f1a14;
-  --muted: #6b6155;
-  --banner-bg: #f2c94c;
-  --banner-text: #1f1a14;
+  --bg: #000000;
+  --surface: #0b0f14;
+  --border: #1c2630;
+  --text: #f2f6fa;
+  --muted: #8d9aa6;
+  --hudhud-color: #4fc3f7;
+  --bolt-color: #4d9dff;
+  --bolt-halo: #ffffff;
+  --bolt-glow: rgba(255, 255, 255, 0.6);
+  --banner-bg: #0d2a3f;
+  --banner-text: #bfe8ff;
   --font: 'IBM Plex Sans Arabic', system-ui, -apple-system, 'Segoe UI', Tahoma, sans-serif;
-  color-scheme: light dark;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #16130f;
-    --text: #f3ede2;
-    --muted: #a99f92;
-    --banner-bg: #8a6d12;
-    --banner-text: #fff8e6;
-  }
+  color-scheme: dark;
 }
 
 *,
