@@ -1,6 +1,6 @@
 import './styles/main.css';
 import './styles/preview.css';
-import { createHudhud, createHudhudShape, type HudhudVariant } from './hudhud/hudhud';
+import { createHudhud, createHudhudShape, hudhudController, type HudhudOptions, type HudhudVariant } from './hudhud/hudhud';
 
 function el<K extends keyof HTMLElementTagNameMap>(
   tag: K,
@@ -21,8 +21,16 @@ function card(title: string, note: string, ...content: HTMLElement[]): HTMLEleme
   return section;
 }
 
-function hudhudCard(variant: HudhudVariant, title: string, note: string): HTMLElement {
-  return card(title, note, createHudhud(variant));
+/** كل هدهد متحرك في الصفحة، ليمكن إيقافه عند لحظة محددة لالتقاط الصور (window.hudhudPreview). */
+const animated: HTMLElement[] = [];
+
+/** ?seed=رقم في الرابط يثبّت الحركة (للمقارنة ولالتقاط الصور). بدونه تختلف الحركة في كل زيارة. */
+const fixedSeed = Number(new URLSearchParams(location.search).get('seed')) || undefined;
+
+function hudhudCard(variant: HudhudVariant, title: string, note: string, options: HudhudOptions = {}): HTMLElement {
+  const hudhud = createHudhud(variant, 'هدهد الهندسة', { seed: fixedSeed, ...options });
+  animated.push(hudhud);
+  return card(title, note, hudhud);
 }
 
 function mapSample(): HTMLElement {
@@ -54,13 +62,21 @@ function render(root: HTMLElement): void {
     el(
       'p',
       undefined,
-      'الحركة: ينقر الأرض مرتين، يرفع رأسه، يلتفت، ثم تضربه صاعقة خفيفة. تأتي الصاعقة كل مرة من اتجاه: الأعلى ثم اليمين ثم اليسار. الدورة 8 ثوانٍ وتتكرر. اعتمد الفريق الصواعق الهادئة.',
+      'ينقر الأرض مرة إلى ثلاث، يرفع رأسه ويلتفت ويُفرد تاجه، ويتنفّس باستمرار. الصواعق تُرسم من جديد في كل مرة، ولا يتكرر شيء حرفياً بين دورة وأخرى. اختاروا درجة الصواعق.',
     ),
   );
 
   const grid = el('main', 'preview-grid');
   grid.append(
-    hudhudCard('calm', 'الهدهد المعتمد', 'صواعق هادئة: صاعقة زرقاء رفيعة بتوهج أبيض خفيف.'),
+    hudhudCard('calm', 'هادئ', '3 صواعق في الدورة، فروع قليلة، وتوهج وشرارات خفيفة.'),
+    hudhudCard('medium', 'متوسط', '4 إلى 5 صواعق، منها دفعة متتالية، وتوهج وشرارات أوضح.'),
+    hudhudCard('strong', 'قوي', '5 إلى 6 صواعق، دفعات متتالية، فروع كثيرة، وتوهج وشرارات قوية.'),
+    hudhudCard(
+      'medium',
+      'تفكيك الأجزاء',
+      'كل جزء بلون: الساقان، الجسم، الذيل، الرأس، التاج. الدوائر البيضاء هي المفاصل. في الهدهد الحقيقي كلها بلون واحد ولا تظهر فواصل.',
+      { debug: true, seed: 7 },
+    ),
     card(
       'علامة الوجهة على الخريطة',
       'نقطة البداية دائرة بسيطة، والوجهة هي الهدهد المصمت. الخريطة هنا رسم توضيحي فقط.',
@@ -79,3 +95,13 @@ function render(root: HTMLElement): void {
 
 const root = document.getElementById('app');
 if (root) render(root);
+
+declare global {
+  interface Window {
+    hudhudPreview?: { seek(ms: number): void; play(): void };
+  }
+}
+window.hudhudPreview = {
+  seek: (ms) => animated.forEach((el) => hudhudController(el)?.seek(ms)),
+  play: () => animated.forEach((el) => hudhudController(el)?.play()),
+};

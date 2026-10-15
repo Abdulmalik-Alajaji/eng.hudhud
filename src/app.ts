@@ -19,7 +19,7 @@ export function renderApp(root: HTMLElement, options: AppOptions): void {
   const main = document.createElement('main');
   main.className = 'placeholder';
 
-  const hudhud = createHudhud('calm', APP_TITLE);
+  const hudhud = createHudhud('medium', APP_TITLE);
   hudhud.classList.add('placeholder__hudhud');
 
   const title = document.createElement('h1');

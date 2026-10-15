@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { findExternalUrls, hasStrictCsp } from './build-checks.mjs';
+import { findExternalUrls, hasStrictCsp, isIdentityChunk } from './build-checks.mjs';
 
 describe('findExternalUrls', () => {
   it('يكتشف الروابط الخارجية بكل أشكالها', () => {
@@ -34,5 +34,13 @@ describe('hasStrictCsp', () => {
     expect(hasStrictCsp('<head></head>')).toBe(false);
     expect(hasStrictCsp(page("default-src 'self' 'unsafe-inline'"))).toBe(false);
     expect(hasStrictCsp(page('default-src *'))).toBe(false);
+  });
+});
+
+describe('isIdentityChunk', () => {
+  it('يتعرف على ملف الهوية فقط', () => {
+    expect(isIdentityChunk('assets/hudhud-B-xa-0dm.js')).toBe(true);
+    expect(isIdentityChunk('assets/main-Cv6d_Nhb.js')).toBe(false);
+    expect(isIdentityChunk('assets/hudhud-DVxV1UPD.css')).toBe(false);
   });
 });

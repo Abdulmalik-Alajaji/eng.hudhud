@@ -1,93 +1,80 @@
-import { readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
-import { describe, expect, it } from 'vitest';
-import { BOLT_DIRECTIONS, createHudhud, createHudhudShape } from './hudhud';
-import { HUDHUD_FEET, HUDHUD_HEIGHT, HUDHUD_PATH, HUDHUD_WIDTH } from './shape';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { createHudhud, createHudhudShape, hudhudController } from './hudhud';
+import { HUDHUD_HEIGHT, HUDHUD_WIDTH } from './shape';
 
-describe('شكل الهدهد', () => {
-  it('مسار SVG صالح بأبعاد موجبة', () => {
-    expect(HUDHUD_PATH.startsWith('M')).toBe(true);
-    expect(HUDHUD_WIDTH).toBeGreaterThan(0);
-    expect(HUDHUD_HEIGHT).toBeGreaterThan(0);
-  });
+function setVisibility(state: 'visible' | 'hidden') {
+  Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => state });
+  document.dispatchEvent(new Event('visibilitychange'));
+}
 
-  it('القدمان داخل حدود الشكل وفي أسفله', () => {
-    expect(HUDHUD_FEET.x).toBeGreaterThan(0);
-    expect(HUDHUD_FEET.x).toBeLessThan(1);
-    expect(HUDHUD_FEET.y).toBeGreaterThan(0.9);
-    expect(HUDHUD_FEET.y).toBeLessThanOrEqual(1);
-  });
+function mockReducedMotion(matches: boolean) {
+  vi.stubGlobal('matchMedia', (query: string) => ({
+    matches: matches && query.includes('reduce'),
+    media: query,
+    addEventListener: () => {},
+    removeEventListener: () => {},
+  }));
+}
 
-  it('createHudhudShape يرسم الشكل بلون النص الحالي', () => {
+describe('createHudhudShape', () => {
+  it('يرسم الشكل بلون النص الحالي', () => {
     const svg = createHudhudShape();
     expect(svg.getAttribute('viewBox')).toBe(`0 0 ${HUDHUD_WIDTH} ${HUDHUD_HEIGHT}`);
     expect(svg.querySelector('path')?.getAttribute('fill')).toBe('currentColor');
-    expect(svg.getAttribute('aria-hidden')).toBe('true');
   });
 });
 
 describe('createHudhud', () => {
+  beforeEach(() => {
+    let id = 0;
+    vi.stubGlobal('requestAnimationFrame', vi.fn(() => ++id));
+    vi.stubGlobal('cancelAnimationFrame', vi.fn());
+    mockReducedMotion(false);
+    setVisibility('visible');
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
+  });
+
   it('صورة لها وصف عربي لقارئات الشاشة', () => {
-    const hudhud = createHudhud();
+    const hudhud = createHudhud('medium');
     expect(hudhud.getAttribute('role')).toBe('img');
     expect(hudhud.getAttribute('aria-label')).toBe('هدهد الهندسة');
+    expect(hudhud.querySelector('canvas')?.getAttribute('aria-hidden')).toBe('true');
   });
 
-  it('الهادئ (اختيار الفريق): صاعقة لكل اتجاه ووهج', () => {
-    const hudhud = createHudhud('calm');
-    expect(hudhud.classList.contains('hudhud--calm')).toBe(true);
-    expect(hudhud.querySelectorAll('.hudhud__bolt')).toHaveLength(BOLT_DIRECTIONS.length);
-    expect(hudhud.querySelector('.hudhud__glow')).not.toBeNull();
-  });
-
-  it('الثابت (علامة الوجهة): الهدهد وحده بلا صواعق ولا وهج', () => {
+  it('الثابت (علامة الوجهة): SVG بلا canvas ولا حركة', () => {
     const hudhud = createHudhud('still', 'الوجهة');
-    expect(hudhud.getAttribute('aria-label')).toBe('الوجهة');
-    expect(hudhud.querySelector('.hudhud__bolt')).toBeNull();
-    expect(hudhud.querySelector('.hudhud__glow')).toBeNull();
-    expect(hudhud.querySelector('.hudhud__bird svg')).not.toBeNull();
+    expect(hudhud.querySelector('svg')).not.toBeNull();
+    expect(hudhud.querySelector('canvas')).toBeNull();
+    expect(hudhudController(hudhud)).toBeUndefined();
   });
 
-  it('محور الحركة عند القدمين', () => {
-    const bird = createHudhud().querySelector<HTMLElement>('.hudhud__bird');
-    expect(bird?.style.transformOrigin).toBe(
-      `${(HUDHUD_FEET.x * 100).toFixed(1)}% ${(HUDHUD_FEET.y * 100).toFixed(1)}%`,
-    );
-  });
-});
-
-describe('hudhud.css', () => {
-  const css = readFileSync(resolve(import.meta.dirname, 'hudhud.css'), 'utf8');
-
-  function keyframeBlocks(source: string): string[] {
-    const blocks: string[] = [];
-    let index = source.indexOf('@keyframes');
-    while (index !== -1) {
-      const open = source.indexOf('{', index);
-      let depth = 0;
-      let end = open;
-      for (; end < source.length; end++) {
-        if (source[end] === '{') depth++;
-        if (source[end] === '}' && --depth === 0) break;
-      }
-      blocks.push(source.slice(open + 1, end));
-      index = source.indexOf('@keyframes', end);
-    }
-    return blocks;
-  }
-
-  it('الحركات بالتحريك والشفافية فقط (خفيفة على الجوال)', () => {
-    const allowed = new Set(['transform', 'opacity', 'scale', 'rotate', 'translate']);
-    const blocks = keyframeBlocks(css);
-    expect(blocks.length).toBeGreaterThan(0);
-    for (const block of blocks) {
-      for (const [, property] of block.matchAll(/([a-z-]+)\s*:/g)) {
-        expect(allowed, `خاصية غير مسموحة في الحركة: ${property}`).toContain(property);
-      }
-    }
+  it('يتحرك، ويتوقف حين تكون الصفحة في الخلفية، ويعود حين ترجع', async () => {
+    const controller = hudhudController(createHudhud('calm'))!;
+    await Promise.resolve();
+    expect(controller.running).toBe(true);
+    setVisibility('hidden');
+    expect(controller.running).toBe(false);
+    setVisibility('visible');
+    expect(controller.running).toBe(true);
   });
 
-  it('الحركة تتوقف عند تفعيل «تقليل الحركة»', () => {
-    expect(css).toMatch(/@media \(prefers-reduced-motion: reduce\)[\s\S]*animation: none/);
+  it('مع «تقليل الحركة» لا يتحرك', async () => {
+    mockReducedMotion(true);
+    const controller = hudhudController(createHudhud('strong'))!;
+    await Promise.resolve();
+    expect(controller.running).toBe(false);
+  });
+
+  it('seek يوقف الحركة عند لحظة محددة، وplay يعيدها', async () => {
+    const controller = hudhudController(createHudhud('medium', undefined, { seed: 1 }))!;
+    await Promise.resolve();
+    controller.seek(2500);
+    expect(controller.running).toBe(false);
+    controller.play();
+    expect(controller.running).toBe(true);
   });
 });

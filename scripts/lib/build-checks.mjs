@@ -1,4 +1,11 @@
 export const MAX_SITE_BYTES = 5 * 1024 * 1024;
+/** حجم الهوية كاملة (كود الهدهد وبياناته) لا يتجاوز 150 كيلوبايت. */
+export const MAX_IDENTITY_BYTES = 150 * 1024;
+
+/** ملفات الهوية في البناء: assets/hudhud-*.js (الاسم مضبوط في vite.config.ts). */
+export function isIdentityChunk(relativePath) {
+  return /(^|[\\/])assets[\\/]hudhud-[\w-]+\.js$/.test(relativePath);
+}
 
 // معرّفات مساحات أسماء SVG/XML: نصوص ثابتة وليست طلبات شبكة.
 const ALLOWED_URL_PREFIXES = ['http://www.w3.org/'];
