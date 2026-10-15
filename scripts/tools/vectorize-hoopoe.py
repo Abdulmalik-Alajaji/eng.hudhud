@@ -19,7 +19,7 @@ SHAPE_TS = ROOT / 'src' / 'hudhud' / 'shape.ts'
 FAVICON = ROOT / 'public' / 'favicon.svg'
 
 PAD = 8  # هامش حول الطائر داخل مساحة الرسم
-BRAND = '#173a5e'
+BRAND = '#4fc3f7'
 
 
 def fmt(value: float) -> str:

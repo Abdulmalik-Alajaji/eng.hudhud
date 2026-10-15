@@ -1,13 +1,6 @@
 import './styles/main.css';
 import './styles/preview.css';
 import { createHudhud, createHudhudShape, type HudhudVariant } from './hudhud/hudhud';
-import { applyThemeChoice, readThemeChoice, type ThemeChoice } from './theme';
-
-const THEMES: { value: ThemeChoice; label: string }[] = [
-  { value: 'auto', label: 'تلقائي' },
-  { value: 'light', label: 'فاتح' },
-  { value: 'dark', label: 'داكن' },
-];
 
 function el<K extends keyof HTMLElementTagNameMap>(
   tag: K,
@@ -30,29 +23,6 @@ function card(title: string, note: string, ...content: HTMLElement[]): HTMLEleme
 
 function hudhudCard(variant: HudhudVariant, title: string, note: string): HTMLElement {
   return card(title, note, createHudhud(variant));
-}
-
-function themeSwitcher(): HTMLElement {
-  const group = el('div', 'theme-switch');
-  group.setAttribute('role', 'group');
-  group.setAttribute('aria-label', 'المظهر');
-  const buttons = THEMES.map(({ value, label }) => {
-    const button = el('button', undefined, label);
-    button.type = 'button';
-    button.addEventListener('click', () => {
-      applyThemeChoice(value);
-      sync(value);
-    });
-    return { value, button };
-  });
-  const sync = (current: ThemeChoice) => {
-    for (const { value, button } of buttons) {
-      button.setAttribute('aria-pressed', String(value === current));
-    }
-  };
-  group.append(...buttons.map((b) => b.button));
-  sync(readThemeChoice());
-  return group;
 }
 
 function mapSample(): HTMLElement {
@@ -78,8 +48,6 @@ function iconSizes(): HTMLElement {
 }
 
 function render(root: HTMLElement): void {
-  applyThemeChoice(readThemeChoice());
-
   const header = el('header', 'preview-header');
   header.append(
     el('h1', undefined, 'معاينة هوية هدهد الهندسة'),
@@ -88,7 +56,6 @@ function render(root: HTMLElement): void {
       undefined,
       'الحركة: ينقر الأرض مرتين، يرفع رأسه، يلتفت، ثم تضربه صاعقة خفيفة. تأتي الصاعقة كل مرة من اتجاه: الأعلى ثم اليمين ثم اليسار. الدورة 8 ثوانٍ وتتكرر.',
     ),
-    themeSwitcher(),
   );
 
   const grid = el('main', 'preview-grid');

@@ -17,32 +17,6 @@
   color: var(--muted);
 }
 
-.theme-switch {
-  display: inline-flex;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  padding: 3px;
-  background: var(--surface);
-}
-
-.theme-switch button {
-  font: inherit;
-  font-size: 0.95rem;
-  color: var(--text);
-  background: transparent;
-  border: 0;
-  border-radius: 999px;
-  padding: 6px 16px;
-  min-height: 36px;
-  cursor: pointer;
-}
-
-.theme-switch button[aria-pressed='true'] {
-  background: var(--hudhud-color);
-  color: var(--bg);
-  font-weight: 700;
-}
-
 .preview-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));

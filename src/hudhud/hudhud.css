@@ -139,6 +139,8 @@
   width: 100%;
   height: 100%;
   overflow: visible;
+  /* التوهج الأبيض حول الصاعقة الزرقاء: ثابت لا يتحرك، والحركة بالشفافية فقط */
+  filter: drop-shadow(0 0 2px var(--bolt-halo)) drop-shadow(0 0 7px var(--bolt-glow));
 }
 
 .hudhud__bolt path {
@@ -205,7 +207,7 @@
 }
 
 .hudhud__sparks path {
-  stroke: var(--bolt-color);
+  stroke: var(--bolt-halo);
   stroke-width: 1.4;
   stroke-linecap: round;
 }
