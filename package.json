@@ -1,0 +1,28 @@
+{
+  "name": "eng-hudhud",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "هدهد الهندسة: دليل الوصول إلى قاعات ومرافق كلية الهندسة",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "check:build": "node scripts/check-build.mjs",
+    "check:secrets": "node scripts/check-secrets.mjs",
+    "verify": "npm run check:secrets && npm run typecheck && npm test && npm run build && npm run check:build"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "jsdom": "^29.1.1",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.4",
+    "vitest": "^5.0.5"
+  }
+}
