@@ -75,6 +75,29 @@ export function placeLabel(place: Place): string {
 
 export const meters = (m: number): string => `${Math.max(1, Math.round(m))} م`;
 
+/**
+ * طول الخطوة المتوسط لشخص بالغ بالأمتار (تقدير عام، غير مقيس على طلاب الكلية).
+ * عدد الخطوات تقريبي لمساعدة الطالب، والمرجع هو الأمتار.
+ */
+export const STEP_LENGTH_M = 0.75;
+
+/** عدد الخطوات التقريبي: بالضبط حتى 20، ثم مقرّباً لأقرب 5 لأنه تقدير. */
+export function stepCount(m: number): number {
+  const steps = Math.max(1, Math.round(m / STEP_LENGTH_M));
+  return steps > 20 ? Math.round(steps / 5) * 5 : steps;
+}
+
+/** «خطوة واحدة»، «خطوتان»، «5 خطوات»، «13 خطوة»، «105 خطوات» حسب قواعد العدد في العربية. */
+export function stepsText(n: number): string {
+  if (n === 1) return 'خطوة واحدة';
+  if (n === 2) return 'خطوتان';
+  const rest = n % 100;
+  return rest >= 3 && rest <= 10 ? `${n} خطوات` : `${n} خطوة`;
+}
+
+/** المسافة كما تُكتب للطالب: «36 م (نحو 50 خطوة)». */
+export const distance = (m: number): string => `${meters(m)} (نحو ${stepsText(stepCount(m))})`;
+
 /** أوضح مكان عند النقطة لذكره في الشرح: المرافق والدرج والمداخل أولاً، ثم القاعات (أرقامها على الأبواب). */
 function landmarkAt(graph: Graph, node: GraphNode, exclude?: Place): string | null {
   const here = (graph.placesAt.get(node.id) ?? []).filter((p) => p !== exclude);
@@ -97,8 +120,8 @@ export function describeLeg(graph: Graph, leg: Omit<Leg, 'steps'>, context: LegC
   list.forEach((run, index) => {
     const end = run.nodes[run.nodes.length - 1] as GraphNode;
     const walk = run.passage !== undefined
-      ? `اعبر ${graph.passageNames.get(run.passage) ?? 'الممر'} (${meters(run.meters)})`
-      : `امشِ ${meters(run.meters)}`;
+      ? `اعبر ${graph.passageNames.get(run.passage) ?? 'الممر'}: ${distance(run.meters)}`
+      : `امشِ ${distance(run.meters)}`;
 
     if (index === 0) {
       // في البداية لا نعرف أين ينظر الطالب، فنذكر ما سيصل إليه بدل يمين أو يسار.
@@ -114,7 +137,7 @@ export function describeLeg(graph: Graph, leg: Omit<Leg, 'steps'>, context: LegC
     const at = landmarkAt(graph, run.start, goal);
     const prefix = at ? `عند ${at}، ` : '';
     if (turn === 'straight') {
-      steps.push(run.passage !== undefined ? `${prefix}${walk}` : `${prefix}استمر مستقيماً ${meters(run.meters)}`);
+      steps.push(run.passage !== undefined ? `${prefix}${walk}` : `${prefix}استمر مستقيماً ${distance(run.meters)}`);
     } else {
       steps.push(`${prefix}${TURN_TEXT[turn]} و${walk}`);
     }

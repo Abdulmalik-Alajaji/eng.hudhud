@@ -11,7 +11,7 @@ import { LEVEL_NAMES, LEVELS, type Floor, type Level } from './data/types';
 import { createHudhud } from './hudhud/hudhud';
 import { buildGraph } from './route/graph';
 import { type Leg, type Start, type Target, findRoute, placeLabel } from './route/route';
-import { meters } from './route/directions';
+import { distance } from './route/directions';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
@@ -90,7 +90,7 @@ function pin(root: HTMLElement, node: HTMLElement, x: number, y: number, floor: 
 
 function legCard(leg: Leg, index: number, count: number, last: boolean): HTMLElement {
   const card = el('section', 'debug-card');
-  card.append(el('h2', undefined, `${index + 1} من ${count}: ${LEVEL_NAMES[leg.level]} · ${meters(leg.meters)}`));
+  card.append(el('h2', undefined, `${index + 1} من ${count}: ${LEVEL_NAMES[leg.level]} · ${distance(leg.meters)}`));
 
   const { root, layer } = mapView(leg, `خريطة ${LEVEL_NAMES[leg.level]}`);
   const points = leg.path.map((n) => `${n.x},${n.y}`).join(' ');
@@ -260,7 +260,7 @@ function render(root: HTMLElement): void {
     }
     const { route } = found;
     output.append(
-      el('p', 'debug-summary', `المسافة ${meters(route.meters)} · ${mapCount(route.legs.length)}`),
+      el('p', 'debug-summary', `المسافة ${distance(route.meters)} · ${mapCount(route.legs.length)}`),
       el('p', 'debug-note', `من ${route.start.label} إلى ${placeLabel(route.destination)}`),
     );
     route.legs.forEach((leg, i) => output.append(legCard(leg, i, route.legs.length, i === route.legs.length - 1)));

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { loadDataset } from '../data/dataset';
 import type { Dataset } from '../data/types';
-import { turnBetween } from './directions';
+import { distance, stepCount, stepsText, turnBetween } from './directions';
 import { buildGraph } from './graph';
 import { findRoute, type Route } from './route';
 
@@ -86,14 +86,39 @@ describe('الانعطاف', () => {
   });
 });
 
+describe('عدد الخطوات التقريبي', () => {
+  it('خطوة متوسطة 0.75 م: بالضبط حتى 20، ثم لأقرب 5', () => {
+    expect(stepCount(0.2)).toBe(1);
+    expect(stepCount(10)).toBe(13);
+    expect(stepCount(15)).toBe(20);
+    expect(stepCount(36)).toBe(50);
+    expect(stepCount(104)).toBe(140);
+  });
+
+  it('قواعد العدد في العربية', () => {
+    expect(stepsText(1)).toBe('خطوة واحدة');
+    expect(stepsText(2)).toBe('خطوتان');
+    expect(stepsText(5)).toBe('5 خطوات');
+    expect(stepsText(10)).toBe('10 خطوات');
+    expect(stepsText(13)).toBe('13 خطوة');
+    expect(stepsText(105)).toBe('105 خطوات');
+    expect(stepsText(140)).toBe('140 خطوة');
+  });
+
+  it('المسافة بالأمتار ثم الخطوات بين قوسين', () => {
+    expect(distance(36)).toBe('36 م (نحو 50 خطوة)');
+    expect(distance(3)).toBe('3 م (نحو 4 خطوات)');
+  });
+});
+
 describe('findRoute: الطابق نفسه', () => {
   it('أقصر طريق بالأمتار والشرح يمين', () => {
     const r = route(fixture(), { place: 'B1-G101' }, { place: 'B1-G102' });
     expect(r.meters).toBe(20);
     expect(r.legs).toHaveLength(1);
     expect(r.legs[0]!.steps).toEqual([
-      'ابدأ من القاعة B1-G101، امشِ 10 م',
-      'انعطف يميناً وامشِ 10 م',
+      'ابدأ من القاعة B1-G101، امشِ 10 م (نحو 13 خطوة)',
+      'انعطف يميناً وامشِ 10 م (نحو 13 خطوة)',
       'وصلت إلى القاعة B1-G102',
     ]);
   });
@@ -101,8 +126,8 @@ describe('findRoute: الطابق نفسه', () => {
   it('العكس: يسار', () => {
     const r = route(fixture(), { place: 'B1-G102' }, { place: 'B1-G101' });
     expect(r.legs[0]!.steps).toEqual([
-      'ابدأ من القاعة B1-G102، امشِ 10 م',
-      'انعطف يساراً وامشِ 10 م',
+      'ابدأ من القاعة B1-G102، امشِ 10 م (نحو 13 خطوة)',
+      'انعطف يساراً وامشِ 10 م (نحو 13 خطوة)',
       'وصلت إلى القاعة B1-G101',
     ]);
   });
@@ -111,7 +136,7 @@ describe('findRoute: الطابق نفسه', () => {
     const r = route(fixture(), { place: 'B2-G101' }, { place: 'B1-G102' });
     expect(r.meters).toBe(40);
     expect(r.legs).toHaveLength(1);
-    expect(r.legs[0]!.steps).toContain('انعطف يميناً واعبر الممر بين المبنيين (10 م)');
+    expect(r.legs[0]!.steps).toContain('انعطف يميناً واعبر الممر بين المبنيين: 10 م (نحو 13 خطوة)');
   });
 
   it('البداية هي الوجهة', () => {
@@ -129,7 +154,7 @@ describe('findRoute: تغيير الطابق', () => {
     expect(r.legs.map((l) => l.level)).toEqual(['G', 'F']);
     expect(r.legs[0]!.exit?.kind).toBe('stairs');
     expect(r.legs[0]!.steps.at(-1)).toBe('اصعد بالدرج إلى الطابق الأول');
-    expect(r.legs[1]!.steps[0]).toBe('من الدرج، امشِ 10 م');
+    expect(r.legs[1]!.steps[0]).toBe('من الدرج، امشِ 10 م (نحو 13 خطوة)');
   });
 
   it('بدون درج: بالمصعد ولو كان أطول', () => {
@@ -232,7 +257,7 @@ describe('البيانات التجريبية', () => {
 
   it('أول خطوة تذكر ما سيصل إليه الطالب، لأننا لا نعرف أين ينظر', () => {
     const r = route(dataset, { place: 'B1-G-EN1' }, { place: 'B1-G-CAF' });
-    expect(r.legs[0]!.steps[0]).toMatch(/^ابدأ من المدخل الرئيسي، امشِ \d+ م باتجاه /);
+    expect(r.legs[0]!.steps[0]).toMatch(/^ابدأ من المدخل الرئيسي، امشِ \d+ م \(نحو \d+ خطو(ة|ات)\) باتجاه /);
   });
 
   it('سريع: مسار بين مبنيين وطابقين في أقل من 200 ملّي ثانية', () => {
