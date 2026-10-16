@@ -1,0 +1,205 @@
+/* صفحة تجربة المسارات (للفريق). */
+
+.debug-header,
+.debug-main {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding-inline: max(16px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-left));
+}
+
+.debug-header {
+  padding-top: 20px;
+}
+
+.debug-header h1 {
+  margin: 0 0 4px;
+  font-size: 1.5rem;
+}
+
+.debug-header p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.debug-main {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 16px;
+  padding-bottom: calc(env(safe-area-inset-bottom) + 32px);
+}
+
+.debug-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.debug-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.debug-field label {
+  font-weight: 700;
+}
+
+.debug-field select {
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+  /* 16px على الأقل حتى لا يكبّر Safari الآيفون الصفحة عند الاختيار */
+  font: inherit;
+  font-size: 1rem;
+}
+
+.debug-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+}
+
+.debug-check input {
+  width: 22px;
+  height: 22px;
+  accent-color: var(--hudhud-color);
+}
+
+.debug-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+}
+
+.debug-card[hidden] {
+  display: none;
+}
+
+.debug-card h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.debug-levels {
+  display: flex;
+  gap: 8px;
+}
+
+.debug-levels button {
+  flex: 1;
+  min-height: 44px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+}
+
+.debug-levels button.is-active {
+  border-color: var(--hudhud-color);
+  color: var(--hudhud-color);
+  font-weight: 700;
+}
+
+/* الخريطة: الصورة وفوقها طبقة رسم بإحداثيات الصورة نفسها. */
+.debug-map {
+  position: relative;
+  width: 100%;
+  border-radius: 12px;
+  background: var(--bg);
+  /* الهدهد عند وجهة قرب الحافة يظهر خارج الخريطة بدل أن يُقص */
+  overflow: visible;
+  /* الإحداثيات على الخريطة فيزيائية (يسار/يمين الصورة) لا تتبع اتجاه الصفحة */
+  direction: ltr;
+}
+
+.debug-map--pick {
+  cursor: crosshair;
+}
+
+.debug-map__image,
+.debug-map__layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.debug-route,
+.debug-route__casing {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.debug-route__casing {
+  stroke: var(--bg);
+  stroke-width: 16;
+}
+
+.debug-route {
+  stroke: var(--hudhud-color);
+  stroke-width: 9;
+}
+
+.debug-start {
+  fill: var(--text);
+  stroke: var(--bg);
+  stroke-width: 5;
+}
+
+.debug-exit {
+  fill: var(--bolt-color);
+  stroke: var(--bg);
+  stroke-width: 5;
+}
+
+/* الوجهة: الهدهد الثابت، قدماه عند النقطة. */
+.debug-destination {
+  --hudhud-size: 40px;
+  position: absolute;
+  transform: translate(-50%, -96%);
+  filter: drop-shadow(0 0 2px #000) drop-shadow(0 0 1px #000);
+}
+
+.debug-steps {
+  margin: 0;
+  padding-inline-start: 1.5em;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.debug-summary {
+  margin: 0;
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.debug-note {
+  margin: 0;
+  color: var(--muted);
+}
+
+.debug-error {
+  margin: 0;
+  color: #ff8a80;
+}
+
+.debug-output {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
