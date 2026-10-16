@@ -256,9 +256,15 @@ describe('بيانات data/ الفعلية', () => {
     }
   });
 
-  it('المبنيان متصلان بممر واحد على الأقل', () => {
-    const buildingOf = (point: string) => point.slice(0, point.indexOf('-'));
-    expect(dataset.passages.some((p) => buildingOf(p.from) !== buildingOf(p.to))).toBe(true);
+  it('المبنيان متصلان في كل الطوابق (تأكيد الفريق)', () => {
+    const floorOf = (point: string) => point.slice(0, point.indexOf(':'));
+    for (const level of LEVELS) {
+      const linked = dataset.passages.some((p) => {
+        const [a, b] = [floorOf(p.from), floorOf(p.to)];
+        return a.endsWith(`-${level}`) && b.endsWith(`-${level}`) && a !== b;
+      });
+      expect(linked, `الطابق ${level}`).toBe(true);
+    }
   });
 
   it('صورة كل خريطة موجودة في public/', () => {
