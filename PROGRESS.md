@@ -22,7 +22,7 @@
 
 ### المرحلة الحالية
 - المرحلتان 0 (التأسيس) و1 (الهوية) **تمتا ودُمجتا** في `main`، ونجح النشر بعد كل دمج (حسب سجل GitHub Actions).
-- المرحلة 2 (صيغة البيانات والبيانات التجريبية) **نُفّذت** في الفرع `data/phase-2` وطلب دمج جديد، **ولم يُدمج بعد**. التفاصيل في قسم «المرحلة 2» أدناه.
+- المرحلة 2 (صيغة البيانات والبيانات التجريبية) **نُفّذت** في الفرع `data/phase-2` وطلب الدمج [#7](https://github.com/Abdulmalik-Alajaji/eng.hudhud/pull/7)، **ولم يُدمج بعد**. التفاصيل في قسم «المرحلة 2» أدناه.
 - المرحلة التالية بعد الدمج: **3 (محرك المسارات)**.
 - الموقع: https://abdulmalik-alajaji.github.io/eng.hudhud/ وصفحة المعاينة `preview.html`. أكّد الفريق أن الرابط يعمل بعد المرحلة 0. لم أفتح الرابط بنفسي بعد آخر دمج لأن البيئة تمنع ذلك (غير مؤكد أنه يعرض آخر نسخة، لكن مرحلة النشر نجحت).
 
@@ -36,7 +36,7 @@
 | [#4](https://github.com/Abdulmalik-Alajaji/eng.hudhud/pull/4) | إعادة بناء الحركة: أجزاء متحركة وصواعق مرسومة برمجياً | دُمج 2026-10-15 |
 | [#5](https://github.com/Abdulmalik-Alajaji/eng.hudhud/pull/5) | اعتماد درجة الصواعق القوية | دُمج 2026-10-16 |
 | [#6](https://github.com/Abdulmalik-Alajaji/eng.hudhud/pull/6) | هذا التسليم، ثم أجوبة الفريق: نمط الرموز `B1-F215`، والتنفيذ بلا عرض خطة، ومكان المواد الحساسة. عدّل `PROGRESS.md` و`CLAUDE.md` و`materials/README.md` و`data/README.md` و`src/data/demo.test.ts` (رموز الأمثلة فقط) | دُمج 2026-10-16. كان متعارضاً مع `main` لأن مجلد `materials/` حُذف منه بالخطأ، فحُلّ التعارض واستُرجع المجلد في هذا الطلب نفسه |
-| المرحلة 2 (الفرع `data/phase-2`) | صيغة البيانات، وفحص سلامتها، والبيانات التجريبية | مفتوح، لم يُدمج بعد |
+| [#7](https://github.com/Abdulmalik-Alajaji/eng.hudhud/pull/7) | صيغة البيانات، وفحص سلامتها، والبيانات التجريبية | مفتوح، لم يُدمج بعد |
 
 الملفات (بحسب GitHub):
 - **#1** أضاف: `.github/workflows/deploy.yml`، `.gitignore`، `CLAUDE.md`، `PROGRESS.md`، `index.html`، `package.json`، `package-lock.json`، `tsconfig.json`، `vite.config.ts`، `data/README.md`، `materials/README.md`، `public/maps/.gitkeep`، `scripts/check-build.mjs`، `scripts/check-secrets.mjs`، `scripts/lib/build-checks.mjs` واختباره، `scripts/lib/secrets.mjs` واختباره، `src/main.ts`، `src/app.ts` واختباره، `src/data/demo.ts` واختباره، `src/demo-banner.ts`، `src/index-html.test.ts`، `src/styles/main.css`، و4 ملفات خط في `src/assets/fonts/` مع رخصتها. وعدّل `README.md`.
@@ -44,7 +44,7 @@
 - **#3** عدّل: `PROGRESS.md`، `src/app.ts` واختباره، `src/hudhud/hudhud.ts` و`hudhud.css` واختباره، `src/preview.ts`، `src/styles/main.css`.
 - **#4** أضاف في `src/hudhud/`: `cycle.ts` و`easing.ts` و`lightning.ts` و`random.ts` و`rig.ts` و`rig-data.ts` و`scene.ts` و`timeline.ts` مع اختباراتها، و`src/test-setup.ts`. وعدّل `CLAUDE.md` و`PROGRESS.md` و`scripts/check-build.mjs` و`scripts/lib/build-checks.mjs` واختباره و`scripts/tools/vectorize-hoopoe.py` و`src/app.ts` واختباره و`src/hudhud/hudhud.ts` و`hudhud.css` واختباره و`src/preview.ts` و`src/styles/preview.css` و`vite.config.ts`.
 - **#5** عدّل: `CLAUDE.md`، `PROGRESS.md`، `src/app.ts` واختباره، `src/hudhud/hudhud.ts`، `src/preview.ts`.
-- **المرحلة 2** أضافت: `data/buildings.json`، `data/links.json`، `data/doctors.json`، و6 ملفات في `data/floors/` (`B1-G` و`B1-F` و`B1-S` و`B2-G` و`B2-F` و`B2-S`)، `src/data/types.ts`، `src/data/validate.ts` واختباره، `src/data/dataset.ts`. وعدّلت `CLAUDE.md` و`PROGRESS.md` و`data/README.md` و`src/data/demo.ts`.
+- **#7** أضاف: `data/buildings.json`، `data/links.json`، `data/doctors.json`، و6 ملفات في `data/floors/` (`B1-G` و`B1-F` و`B1-S` و`B2-G` و`B2-F` و`B2-S`)، `src/data/types.ts`، `src/data/validate.ts` واختباره، `src/data/dataset.ts`. وعدّلت `CLAUDE.md` و`PROGRESS.md` و`data/README.md` و`src/data/demo.ts`.
 
 الحالة الفنية عند التسليم: `npm run verify` ينجح محلياً (105 اختبارات، فحص الأسرار، فحص البناء: الموقع 0.17 ميجا من 5، والهوية 20.2 كيلوبايت من 150).
 
