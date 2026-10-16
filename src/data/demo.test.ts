@@ -13,8 +13,8 @@ describe('containsDemo', () => {
       {
         id: 'F1',
         rooms: [
-          { code: 'A-101', demo: false },
-          { code: 'A-102', demo: true },
+          { code: 'B1-G101', demo: false },
+          { code: 'B1-G102', demo: true },
         ],
       },
     ];
@@ -23,7 +23,7 @@ describe('containsDemo', () => {
   });
 
   it('بيانات حقيقية فقط: لا شريط', () => {
-    expect(containsDemo([{ code: 'A-101' }, { code: 'A-102', demo: false }])).toBe(false);
+    expect(containsDemo([{ code: 'B1-G101' }, { code: 'B1-G102', demo: false }])).toBe(false);
   });
 
   it('العلامة يجب أن تكون القيمة المنطقية true وليس نصاً', () => {
