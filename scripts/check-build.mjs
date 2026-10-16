@@ -2,6 +2,10 @@
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { extname, join, relative, sep } from 'node:path';
 import { MAX_IDENTITY_BYTES, MAX_SITE_BYTES, findExternalUrls, hasStrictCsp, isIdentityChunk } from './lib/build-checks.mjs';
+import { pwaProblems } from './lib/pwa.mjs';
+
+// المسار الأساسي للموقع على GitHub Pages (مثل BASE في vite.config.ts).
+const BASE = '/eng.hudhud/';
 
 const DIST = 'dist';
 const TEXT_EXTENSIONS = new Set(['.html', '.css', '.js', '.mjs', '.json', '.webmanifest', '.svg', '.txt', '.xml']);
@@ -59,6 +63,14 @@ if (identityFiles === 0) {
   problems.push(`حجم الهوية ${identityKb} كيلوبايت ويتجاوز الحد (150 كيلوبايت)`);
 }
 
+problems.push(
+  ...pwaProblems({
+    files: files.map((file) => relative(DIST, file)),
+    read: (path) => readFileSync(join(DIST, path), 'utf8'),
+    base: BASE,
+  }),
+);
+
 const sizeMb = (totalBytes / 1024 / 1024).toFixed(2);
 if (totalBytes > MAX_SITE_BYTES) {
   problems.push(`حجم الموقع ${sizeMb} ميجا ويتجاوز الحد (5 ميجا)`);
@@ -71,5 +83,5 @@ if (problems.length > 0) {
 }
 
 console.log(
-  `✓ فحص البناء: ${files.length} ملف، الحجم ${sizeMb} ميجا من 5، الهوية ${identityKb} كيلوبايت من 150، لا روابط خارجية، والسياسة الأمنية موجودة.`,
+  `✓ فحص البناء: ${files.length} ملف، الحجم ${sizeMb} ميجا من 5، الهوية ${identityKb} كيلوبايت من 150، لا روابط خارجية، والسياسة الأمنية موجودة، والموقع كله محفوظ للعمل بدون نت.`,
 );
