@@ -49,8 +49,32 @@
   --bolt-glow: rgba(255, 255, 255, 0.6);
   --banner-bg: #0d2a3f;
   --banner-text: #bfe8ff;
+  /* لون الأزرار والروابط والعلامات في الواجهة (الهدهد نفسه --hudhud-color) */
+  --accent: #4fc3f7;
+  --on-accent: #000000;
+  --error: #ffb4ab;
+  --error-border: #ff8a80;
   --font: 'IBM Plex Sans Arabic', system-ui, -apple-system, 'Segoe UI', Tahoma, sans-serif;
   color-scheme: dark;
+}
+
+/*
+ * المظهر الفاتح بلون البيج (اختياري، طلب الفريق في الجلسة الرابعة). يُفعَّل من src/theme.ts في واجهة الطلاب فقط.
+ * الهدهد والصواعق والخريطة بألوانها المعتمدة نفسها، والأزرار والروابط بأزرق أغمق ليُقرأ على البيج.
+ */
+:root[data-theme='light'] {
+  --bg: #f4ecdc;
+  --surface: #fbf6ec;
+  --border: #dccdaf;
+  --text: #2b2418;
+  --muted: #6b5f4a;
+  --banner-bg: #e6d6b4;
+  --banner-text: #4a3a1c;
+  --accent: #0a6c9a;
+  --on-accent: #ffffff;
+  --error: #a3261c;
+  --error-border: #c4453a;
+  color-scheme: light;
 }
 
 *,

@@ -6,6 +6,7 @@
 import { createDemoBanner } from './demo-banner';
 import { LEVEL_NAMES, LEVELS, type Dataset, type Floor, type Level } from './data/types';
 import { createHudhud } from './hudhud/hudhud';
+import { createThemeToggle } from './theme';
 import { createMap, drawLeg, drawStart, routeView, tapPosition } from './map-view';
 import { distance } from './route/directions';
 import { buildGraph } from './route/graph';
@@ -82,7 +83,7 @@ export function renderApp(root: HTMLElement, options: AppOptions): void {
   const hero = el('header', 'hero');
   const hudhud = createHudhud('strong', APP_TITLE);
   hudhud.classList.add('hero__hudhud');
-  hero.append(hudhud, el('h1', 'hero__title', APP_TITLE), el('p', 'hero__tagline', APP_TAGLINE));
+  hero.append(createThemeToggle(), hudhud, el('h1', 'hero__title', APP_TITLE), el('p', 'hero__tagline', APP_TAGLINE));
 
   const { dataset } = options;
   if (!dataset) {
@@ -436,7 +437,9 @@ export function renderApp(root: HTMLElement, options: AppOptions): void {
       if (fromForm) history.back();
       else navigate('');
     });
-    bar.append(home, edit);
+    const actions = el('div', 'topbar__actions');
+    actions.append(createThemeToggle(), edit);
+    bar.append(home, actions);
 
     const main = el('main', 'route');
     view.replaceChildren(bar, main);

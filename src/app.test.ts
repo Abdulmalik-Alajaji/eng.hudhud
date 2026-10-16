@@ -63,6 +63,14 @@ describe('renderApp', () => {
     expect(root.querySelectorAll('.demo-banner')).toHaveLength(1);
   });
 
+  it('زر المظهر في الصفحة الرئيسية وفي شاشة الطريق', () => {
+    renderApp(root, { demo: false, dataset });
+    expect(root.querySelector('.hero .theme-toggle')).not.toBeNull();
+    history.replaceState(null, '', '/#from=B1-G-EN1&to=B1-G-CAF');
+    renderApp(root, { demo: false, dataset });
+    expect(root.querySelector('.topbar .theme-toggle')).not.toBeNull();
+  });
+
   it('رسالة واضحة إذا تعذّر تحميل البيانات', () => {
     renderApp(root, { demo: false, dataset: null });
     expect(root.querySelector('.notice--error')?.textContent).toContain('تعذّر');

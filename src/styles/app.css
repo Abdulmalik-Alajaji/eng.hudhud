@@ -71,8 +71,8 @@
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: var(--hudhud-color);
-  color: var(--bg);
+  background: var(--accent);
+  color: var(--on-accent);
   font-size: 0.95rem;
 }
 
@@ -110,8 +110,8 @@
 
 .tabs__button[aria-pressed='true'],
 .levels__button[aria-pressed='true'] {
-  border-color: var(--hudhud-color);
-  color: var(--hudhud-color);
+  border-color: var(--accent);
+  color: var(--accent);
   font-weight: 700;
 }
 
@@ -146,8 +146,8 @@
 }
 
 .search__input:focus-visible {
-  border-color: var(--hudhud-color);
-  outline: 2px solid var(--hudhud-color);
+  border-color: var(--accent);
+  outline: 2px solid var(--accent);
   outline-offset: 1px;
 }
 
@@ -191,7 +191,7 @@
 
 .result:active,
 .result:focus-visible {
-  border-color: var(--hudhud-color);
+  border-color: var(--accent);
 }
 
 .result__title {
@@ -210,7 +210,7 @@
   align-items: center;
   gap: 12px;
   padding: 10px 12px;
-  border: 1px solid var(--hudhud-color);
+  border: 1px solid var(--accent);
   border-radius: 12px;
   background: var(--bg);
 }
@@ -244,8 +244,8 @@
 }
 
 .btn--primary {
-  background: var(--hudhud-color);
-  color: var(--bg);
+  background: var(--accent);
+  color: var(--on-accent);
 }
 
 .btn--primary:disabled {
@@ -256,7 +256,7 @@
 .btn--ghost {
   border-color: var(--border);
   background: transparent;
-  color: var(--hudhud-color);
+  color: var(--accent);
 }
 
 .btn--wide {
@@ -269,7 +269,7 @@
 .tabs__button:focus-visible,
 .levels__button:focus-visible,
 .result:focus-visible {
-  outline: 2px solid var(--hudhud-color);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
@@ -294,7 +294,7 @@
   width: 22px;
   height: 22px;
   margin: 0;
-  accent-color: var(--hudhud-color);
+  accent-color: var(--accent);
 }
 
 /* ---------- شاشة الطريق ---------- */
@@ -371,7 +371,7 @@
 
 .summary__total {
   margin: 0;
-  color: var(--hudhud-color);
+  color: var(--accent);
   font-weight: 700;
 }
 
@@ -426,7 +426,7 @@
 }
 
 .directions li::marker {
-  color: var(--hudhud-color);
+  color: var(--accent);
   font-weight: 700;
 }
 
@@ -454,8 +454,8 @@
 }
 
 .notice--error {
-  border: 1px solid #ff8a80;
-  color: #ffb4ab;
+  border: 1px solid var(--error-border);
+  color: var(--error);
 }
 
 /* ---------- الإضافة إلى الشاشة الرئيسية (src/pwa/install.ts) ---------- */
@@ -493,7 +493,7 @@
 }
 
 .install__steps li::marker {
-  color: var(--hudhud-color);
+  color: var(--accent);
   font-weight: 700;
 }
 
@@ -504,4 +504,52 @@
 
 .install__actions .btn--primary {
   flex: 1;
+}
+
+/* ---------- زر المظهر (src/theme.ts) ---------- */
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 4px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.9rem;
+}
+
+.theme-toggle svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* في الصفحة الرئيسية: في الزاوية فوق الهدهد. */
+.hero {
+  position: relative;
+}
+
+.hero .theme-toggle {
+  position: absolute;
+  top: 12px;
+  inset-inline-end: 0;
+}
+
+.topbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }

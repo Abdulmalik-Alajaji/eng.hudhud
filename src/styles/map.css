@@ -6,6 +6,9 @@
  */
 
 .map {
+  /* الخريطة داكنة بألوانها المعتمدة في المظهرين (الفاتح لا يغيّرها) */
+  --bg: #000000;
+  --text: #f2f6fa;
   position: relative;
   width: 100%;
   border-radius: 12px;
