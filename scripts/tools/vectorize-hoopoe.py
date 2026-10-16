@@ -41,6 +41,11 @@ def pt(point, ox: float, oy: float) -> str:
 
 
 def main() -> None:
+    if not SOURCE.exists():
+        raise SystemExit(
+            'صورة الهدهد غير موجودة في materials/hoopoe.jpg. استرجعها من سجل git:\n'
+            '    mkdir -p materials && git show 3a2f7dd:materials/hoopoe.jpg > materials/hoopoe.jpg'
+        )
     image = Image.open(SOURCE).convert('L')
     dark = np.array(image) < 128
     ys, xs = np.nonzero(dark)
