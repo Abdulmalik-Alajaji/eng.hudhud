@@ -23,7 +23,7 @@
 ### المرحلة الحالية
 - **المراحل 0 إلى 6 تمت ودُمجت** في `main`. آخر دمج: #14 (الـ commit `632ec32`)، ونجح النشر بعده حسب سجل GitHub Actions.
 - **المرحلة التالية: 7 (البيانات الحقيقية)، ولم تبدأ.** تنتظر أجوبة الفريق أدناه.
-- طلب هذا التسليم (تحديث `PROGRESS.md` و`CLAUDE.md` فقط) في فرع مستقل `docs/session-3-handoff`، لأن #14 دُمج قبله.
+- طلب هذا التسليم [#15](https://github.com/Abdulmalik-Alajaji/eng.hudhud/pull/15) (تحديث `PROGRESS.md` و`CLAUDE.md` فقط) من الفرع `docs/session-3-handoff`، طلب مستقل لأن #14 دُمج قبله. مفتوح عند كتابة هذا القسم.
 - الروابط: الموقع https://abdulmalik-alajaji.github.io/eng.hudhud/ ، وصفحة الإدارة `admin.html`، و`debug.html`، و`preview.html`. لم أفتح الموقع المنشور بنفسي (البيئة تمنع ذلك)، وكل التجارب على نسخة مبنية محلياً.
 
 ### ما أُنجز في هذه الجلسة (Pull Requests)
@@ -34,6 +34,7 @@
 | [#12](https://github.com/Abdulmalik-Alajaji/eng.hudhud/pull/12) | المرحلة 5: يعمل بدون نت، ويُضاف إلى الشاشة الرئيسية | دُمج 2026-10-16 |
 | [#13](https://github.com/Abdulmalik-Alajaji/eng.hudhud/pull/13) | بطاقة الإضافة إلى الشاشة الرئيسية، وتسجيل أجوبة الفريق | دُمج 2026-10-16 |
 | [#14](https://github.com/Abdulmalik-Alajaji/eng.hudhud/pull/14) | المرحلة 6: صفحة الإدارة، ثم (بعد المراجعة) صفحات الفريق من النت أولاً | دُمج 2026-10-16 |
+| [#15](https://github.com/Abdulmalik-Alajaji/eng.hudhud/pull/15) | تسليم هذه الجلسة: `PROGRESS.md` و`CLAUDE.md` فقط | مفتوح عند كتابة هذا القسم |
 
 الملفات (بحسب GitHub):
 - **#11** أضاف: `src/search.ts` واختباره، `src/map-view.ts` واختباره، `src/route/link.ts`، `src/styles/app.css`، `src/styles/map.css`. وعدّل: `src/app.ts` واختباره، `src/main.ts`، `src/debug.ts`، `src/styles/debug.css` (نُقلت أنماط الخريطة منه)، `src/styles/main.css` (حُذفت أنماط «قريباً»)، `CLAUDE.md`، `PROGRESS.md`.
@@ -104,7 +105,7 @@
 
 ### الخطوة التالية بالضبط
 1. اقرأ `CLAUDE.md` وهذا الملف.
-2. تأكد أن طلب هذا التسليم (الفرع `docs/session-3-handoff`) دُمج، وإن لم يُدمج اسأل الفريق.
+2. تأكد أن [#15](https://github.com/Abdulmalik-Alajaji/eng.hudhud/pull/15) (طلب هذا التسليم) دُمج، وإن لم يُدمج اسأل الفريق.
 3. **لا تبدأ المرحلة 7 قبل جواب الفريق على الأسئلة أدناه.** المرحلة 7 تحتاج بيانات حقيقية من الفريق، ولا تُخترع (القاعدة 7). بعد الجواب:
    - يُربط المستودع الخاص `eng.hudhud-materials` بالجلسة (قرار الفريق: في المرحلة 7)، ومنه صور الطوابق والقياسات وجدول الدكاترة.
    - صورة نظيفة لكل طابق تُنشر في `public/maps/`، والنسخة المكتوب عليها تبقى في المستودع الخاص.
