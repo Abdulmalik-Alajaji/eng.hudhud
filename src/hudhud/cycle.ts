@@ -76,6 +76,10 @@ function newTracks(): Record<Channel, Track> {
   };
 }
 
+/** ميل التاج بالدرجات: ينضغط للخلف قليلاً في النقر، ويرتفع قليلاً في الالتفات. حركة خفيفة لا انثناء. */
+export const CREST_PRESSED = 6;
+export const CREST_RAISED = -5;
+
 /**
  * نقرة: تحضير (الرأس يرتفع قليلاً) ← نزول سريع ← لحظة ملامسة ← ارتداد بتجاوز بسيط ← استقرار.
  * الجسم يميل قليلاً متأخراً عن الرأس، والذيل يرتفع للتوازن متأخراً أكثر.
@@ -102,8 +106,8 @@ function peck(tracks: Record<Channel, Track>, t0: number, rng: Random): number {
   tail.wait(t0 + 40).to(tDown + 30, 2, easeInOutSine).to(tHit + 90, -rng.range(9, 14), easeOutCubic);
   tail.to(tUp + recover + 160, 0, easeOutBack(2.2));
 
-  // التاج ينضغط على الرأس أثناء النقر، ثم يعود.
-  crest.wait(t0).to(tHit, 0, easeInOutSine).wait(tUp).to(tUp + recover + 120, REST_POSE.crest, easeOutBack(1.6));
+  // التاج ينضغط قليلاً للخلف أثناء النقر، ثم يعود.
+  crest.wait(t0).to(tHit, CREST_PRESSED, easeInOutSine).wait(tUp).to(tUp + recover + 120, REST_POSE.crest, easeOutBack(1.6));
 
   return tUp + recover;
 }
@@ -120,7 +124,7 @@ function look(tracks: Record<Channel, Track>, t0: number, rng: Random): number {
   body.wait(t0).to(t0 + lift, 1.5, easeInOutSine);
 
   const tOpen = t0 + 120;
-  crest.wait(tOpen).to(tOpen + rng.jitter(190), 1, easeOutBack(2.4));
+  crest.wait(tOpen).to(tOpen + rng.jitter(190), CREST_RAISED, easeOutBack(2.4));
 
   const tTurn = t0 + 90 + lift * 0.7;
   flip.wait(tTurn).to(tTurn + turn, -1, easeInOutCubic);

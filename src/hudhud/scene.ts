@@ -22,6 +22,19 @@ const AMBIENT_CENTER: Point = [360, 330];
 const AMBIENT_RADIUS = 420;
 
 const BREATH_PERIOD = 3600;
+
+/** ارتفاع التاج مع الضربة بالدرجات (سالب = يرتفع). */
+const CREST_FLARE = -6;
+/** الريش يتأخر قليلاً عن حركة الرأس ثم يلحق به: الميل بالدرجات لكل درجة تحركها الرأس في LAG_WINDOW. */
+const LAG_GAIN = 0.15;
+const LAG_WINDOW = 60;
+const LAG_MAX = 7;
+
+/** تأخر الريش عن الرأس: إذا نزل الرأس بسرعة ينضغط التاج للخلف قليلاً، وإذا ارتفع يرتفع التاج، ثم يستقر. */
+function crestLag(head: Cycle['tracks']['head'], t: number): number {
+  const lag = -LAG_GAIN * (head.sample(t) - head.sample(Math.max(0, t - LAG_WINDOW)));
+  return Math.max(-LAG_MAX, Math.min(LAG_MAX, lag));
+}
 const SPARK_LIFE: readonly [number, number] = [420, 820];
 const GRAVITY = 1500;
 const DRAG = 3.2;
@@ -118,7 +131,7 @@ export class HudhudScene {
       body: tracks.body.sample(local),
       head: tracks.head.sample(local),
       flip: tracks.flip.sample(local),
-      crest: tracks.crest.sample(local),
+      crest: tracks.crest.sample(local) + crestLag(tracks.head, local),
       tail: tracks.tail.sample(local),
       breath: 0.5 - 0.5 * Math.cos((2 * Math.PI * t) / BREATH_PERIOD),
       joltX: 0,
@@ -127,14 +140,14 @@ export class HudhudScene {
     for (const { bolt, local: l } of this.activeBolts(t)) {
       const dt = l - bolt.start;
       if (dt < 0 || dt > 1400) continue;
-      // التاج يُفرد بسرعة مع الضربة ثم ينطوي ببطء.
+      // التاج يرتفع قليلاً بسرعة مع الضربة ثم يعود ببطء.
       const flare =
         dt < 110
-          ? REST_POSE.crest + (1.08 - REST_POSE.crest) * easeOutBack(2.6)(dt / 110)
+          ? CREST_FLARE * easeOutBack(2.6)(dt / 110)
           : dt < 380
-            ? 1.08
-            : 1.08 - (1.08 - REST_POSE.crest) * easeInOutSine(Math.min(1, (dt - 380) / 900));
-      pose.crest = Math.max(pose.crest, flare);
+            ? CREST_FLARE
+            : CREST_FLARE * (1 - easeInOutSine(Math.min(1, (dt - 380) / 900)));
+      pose.crest = Math.min(pose.crest, REST_POSE.crest + flare);
       // ارتجافة قصيرة تخمد بسرعة.
       const decay = Math.exp(-dt / 120);
       pose.joltX += 6 * decay * Math.sin(dt / 17);
