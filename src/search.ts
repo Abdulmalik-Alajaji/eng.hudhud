@@ -106,15 +106,13 @@ export function placeEntry(dataset: Dataset, place: Place, floor: Floor): Search
 /** كلمات تُضاف لأسماء الدكاترة حتى يجدها من يكتب «دكتور» أو «الدكتورة» بدل «د.». */
 const DOCTOR_WORDS = ['دكتور', 'الدكتور', 'دكتورة', 'الدكتورة'];
 
-export interface DestinationOptions {
-  /** أنواع الأماكن التي لا تظهر في النتائج. */
-  excludeKinds?: Place['kind'][];
-  /** إضافة الدكاترة إلى النتائج. */
+export interface EntryOptions {
+  /** إضافة الدكاترة إلى النتائج (للوجهة فقط). */
   doctors?: boolean;
 }
 
 /** كل ما يمكن البحث عنه في البيانات: الأماكن (بترتيب الطوابق) والدكاترة. */
-export function datasetEntries(dataset: Dataset, options: DestinationOptions = {}): SearchEntry[] {
+export function datasetEntries(dataset: Dataset, options: EntryOptions = {}): SearchEntry[] {
   const entries: SearchEntry[] = [];
   if (options.doctors) {
     for (const doctor of dataset.doctors) {
@@ -129,7 +127,6 @@ export function datasetEntries(dataset: Dataset, options: DestinationOptions = {
   }
   for (const floor of dataset.floors) {
     for (const place of floor.places) {
-      if (options.excludeKinds?.includes(place.kind)) continue;
       entries.push(placeEntry(dataset, place, floor));
     }
   }
