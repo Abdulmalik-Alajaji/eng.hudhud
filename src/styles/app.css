@@ -1,0 +1,459 @@
+/* واجهة الطلاب (index.html): مصممة للجوال أولاً، وعمود واحد بعرض أقصى على الشاشات الكبيرة. */
+
+.view {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 0 max(16px, env(safe-area-inset-right)) calc(env(safe-area-inset-bottom) + 32px)
+    max(16px, env(safe-area-inset-left));
+}
+
+/* ---------- الهدهد واسم الموقع ---------- */
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 8px;
+  text-align: center;
+}
+
+.hero .hero__hudhud {
+  --hudhud-size: min(30vw, 120px);
+  /* مساحة فوق الهدهد لتظهر الصواعق كاملة */
+  margin: 44px 0 4px;
+}
+
+.hero__title {
+  margin: 0;
+  font-size: clamp(1.75rem, 8vw, 2.5rem);
+  line-height: 1.3;
+}
+
+.hero__tagline {
+  margin: 0;
+  color: var(--muted);
+}
+
+/* ---------- خطوات الاختيار ---------- */
+
+.planner {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 20px;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+}
+
+.step__title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+.step__number {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--hudhud-color);
+  color: var(--bg);
+  font-size: 0.95rem;
+}
+
+.step__body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+/* أزرار متجاورة: طريقة تحديد المكان، والطابق على الخريطة. */
+.tabs,
+.levels {
+  display: flex;
+  gap: 6px;
+}
+
+.tabs__button,
+.levels__button {
+  flex: 1;
+  min-height: 44px;
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.95rem;
+}
+
+.tabs__button[aria-pressed='true'],
+.levels__button[aria-pressed='true'] {
+  border-color: var(--hudhud-color);
+  color: var(--hudhud-color);
+  font-weight: 700;
+}
+
+/* ---------- البحث ---------- */
+
+.search {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.search__label {
+  font-weight: 700;
+}
+
+.search__input {
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg);
+  color: var(--text);
+  /* 16px على الأقل حتى لا يكبّر Safari الآيفون الصفحة عند الكتابة */
+  font: inherit;
+  font-size: 1.05rem;
+}
+
+.search__input::placeholder {
+  color: var(--muted);
+  opacity: 1;
+}
+
+.search__input:focus-visible {
+  border-color: var(--hudhud-color);
+  outline: 2px solid var(--hudhud-color);
+  outline-offset: 1px;
+}
+
+.search__status {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.search__status:empty {
+  display: none;
+}
+
+.results {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.results:empty {
+  display: none;
+}
+
+.result {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  min-height: 48px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  text-align: start;
+}
+
+.result:active,
+.result:focus-visible {
+  border-color: var(--hudhud-color);
+}
+
+.result__title {
+  font-weight: 700;
+}
+
+.result__detail {
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+/* ---------- الاختيار الحالي ---------- */
+
+.choice {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--hudhud-color);
+  border-radius: 12px;
+  background: var(--bg);
+}
+
+.choice__text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.choice__title {
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.choice__detail {
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+/* ---------- الأزرار ---------- */
+
+.btn {
+  min-height: 44px;
+  padding: 8px 16px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  font: inherit;
+  font-weight: 700;
+}
+
+.btn--primary {
+  background: var(--hudhud-color);
+  color: var(--bg);
+}
+
+.btn--primary:disabled {
+  background: var(--border);
+  color: var(--muted);
+}
+
+.btn--ghost {
+  border-color: var(--border);
+  background: transparent;
+  color: var(--hudhud-color);
+}
+
+.btn--wide {
+  width: 100%;
+  min-height: 52px;
+  font-size: 1.1rem;
+}
+
+.btn:focus-visible,
+.tabs__button:focus-visible,
+.levels__button:focus-visible,
+.result:focus-visible {
+  outline: 2px solid var(--hudhud-color);
+  outline-offset: 2px;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.actions .hint {
+  text-align: center;
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+}
+
+.check__input {
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  accent-color: var(--hudhud-color);
+}
+
+/* ---------- شاشة الطريق ---------- */
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 calc(-1 * max(16px, env(safe-area-inset-right))) 0 calc(-1 * max(16px, env(safe-area-inset-left)));
+  padding: 8px max(16px, env(safe-area-inset-right)) 8px max(16px, env(safe-area-inset-left));
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+
+/* مع شريط «نسخة تجريبية» الملتصق بالأعلى لا يلتصق الشريط العلوي حتى لا يتراكبا. */
+.demo-banner ~ .view .topbar {
+  position: static;
+}
+
+.topbar__brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  color: var(--text);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.topbar .topbar__mark {
+  --hudhud-size: 34px;
+}
+
+.route {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 16px;
+}
+
+.summary {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.summary__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+}
+
+.summary__row {
+  display: flex;
+  gap: 8px;
+}
+
+.summary__row dt {
+  flex: none;
+  width: 2.5em;
+  color: var(--muted);
+}
+
+.summary__row dd {
+  margin: 0;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.summary__total {
+  margin: 0;
+  color: var(--hudhud-color);
+  font-weight: 700;
+}
+
+.summary__note {
+  margin: 0;
+  color: var(--muted);
+}
+
+.leg {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+}
+
+.leg__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.leg__title {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.leg__title:focus {
+  outline: none;
+}
+
+.leg__count {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.leg__distance {
+  margin: -8px 0 0;
+  color: var(--muted);
+}
+
+.directions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding-inline-start: 1.6em;
+  font-size: 1.05rem;
+}
+
+.directions li::marker {
+  color: var(--hudhud-color);
+  font-weight: 700;
+}
+
+.leg__nav {
+  display: flex;
+  gap: 8px;
+}
+
+.leg__nav .btn {
+  flex: 1;
+  min-height: 52px;
+}
+
+.leg__nav .btn--primary {
+  flex: 2;
+}
+
+/* ---------- رسائل ---------- */
+
+.notice {
+  margin: 16px 0 0;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.notice--error {
+  border: 1px solid #ff8a80;
+  color: #ffb4ab;
+}

@@ -3,28 +3,22 @@
  * على خريطة كل طابق مع الشرح الكتابي. الاختيار يُحفظ في الرابط بعد # لمشاركته.
  */
 import './styles/main.css';
+import './styles/map.css';
 import './styles/debug.css';
 import { createDemoBanner } from './demo-banner';
 import { loadDataset } from './data/dataset';
 import { containsDemo, loadAllData } from './data/demo';
 import { LEVEL_NAMES, LEVELS, type Floor, type Level } from './data/types';
-import { createHudhud } from './hudhud/hudhud';
+import { createMap, drawLeg, drawStart, tapPosition } from './map-view';
 import { buildGraph } from './route/graph';
-import { type Leg, type Start, type Target, findRoute, placeLabel } from './route/route';
+import { encodeTap, parseStart, parseTarget } from './route/link';
+import { type Leg, findRoute, placeLabel } from './route/route';
 import { distance } from './route/directions';
-
-const SVG_NS = 'http://www.w3.org/2000/svg';
 
 function el<K extends keyof HTMLElementTagNameMap>(tag: K, className?: string, text?: string): HTMLElementTagNameMap[K] {
   const node = document.createElement(tag);
   if (className) node.className = className;
   if (text !== undefined) node.textContent = text;
-  return node;
-}
-
-function svg<K extends keyof SVGElementTagNameMap>(tag: K, attrs: Record<string, string | number>): SVGElementTagNameMap[K] {
-  const node = document.createElementNS(SVG_NS, tag);
-  for (const [key, value] of Object.entries(attrs)) node.setAttribute(key, String(value));
   return node;
 }
 
@@ -46,69 +40,18 @@ function writeState(state: State): void {
   history.replaceState(null, '', `#${params.toString()}`);
 }
 
-function parseStart(value: string): Start | null {
-  if (value.startsWith('tap:')) {
-    const [, floor, x, y] = value.split(':');
-    if (!floor || Number.isNaN(Number(x)) || Number.isNaN(Number(y))) return null;
-    return { floor, x: Number(x), y: Number(y) };
-  }
-  return value ? { place: value } : null;
-}
-
-function parseTarget(value: string): Target | null {
-  if (value.startsWith('doctor:')) return { doctor: value.slice('doctor:'.length) };
-  return value ? { place: value } : null;
-}
-
 const result = loadDataset();
 const graph = result.dataset ? buildGraph(result.dataset) : null;
 /** العدد بالعربية: خريطة واحدة، خريطتان، 3 خرائط. */
 const mapCount = (n: number): string => (n === 1 ? 'خريطة واحدة' : n === 2 ? 'خريطتان' : `${n} خرائط`);
-const mapUrl = (map: string): string => `${import.meta.env.BASE_URL}${map}`;
-
-/** الخريطة مع طبقة رسم فوقها بإحداثيات الصورة نفسها. */
-function mapView(floor: Pick<Floor, 'map' | 'width' | 'height'>, label: string): { root: HTMLElement; layer: SVGSVGElement } {
-  const root = el('div', 'debug-map');
-  root.style.aspectRatio = `${floor.width} / ${floor.height}`;
-  if (floor.map) {
-    const img = el('img', 'debug-map__image');
-    img.src = mapUrl(floor.map);
-    img.alt = label;
-    root.append(img);
-  }
-  const layer = svg('svg', { viewBox: `0 0 ${floor.width} ${floor.height}`, class: 'debug-map__layer', 'aria-hidden': 'true' });
-  root.append(layer);
-  return { root, layer };
-}
-
-/** موضع عنصر HTML فوق الخريطة بالنسبة المئوية من إحداثيات الصورة. */
-function pin(root: HTMLElement, node: HTMLElement, x: number, y: number, floor: { width: number; height: number }): void {
-  node.style.left = `${(x / floor.width) * 100}%`;
-  node.style.top = `${(y / floor.height) * 100}%`;
-  root.append(node);
-}
-
 function legCard(leg: Leg, index: number, count: number, last: boolean): HTMLElement {
   const card = el('section', 'debug-card');
   card.append(el('h2', undefined, `${index + 1} من ${count}: ${LEVEL_NAMES[leg.level]} · ${distance(leg.meters)}`));
 
-  const { root, layer } = mapView(leg, `خريطة ${LEVEL_NAMES[leg.level]}`);
-  const points = leg.path.map((n) => `${n.x},${n.y}`).join(' ');
-  layer.append(
-    svg('polyline', { points, class: 'debug-route__casing' }),
-    svg('polyline', { points, class: 'debug-route' }),
-  );
-  const first = leg.path[0];
-  const end = leg.path[leg.path.length - 1];
-  if (first) layer.append(svg('circle', { cx: first.x, cy: first.y, r: 13, class: 'debug-start' }));
-  if (end && last) {
-    const destination = createHudhud('still', 'الوجهة');
-    destination.classList.add('debug-destination');
-    pin(root, destination, end.x, end.y, leg);
-  } else if (end) {
-    layer.append(svg('rect', { x: end.x - 13, y: end.y - 13, width: 26, height: 26, rx: 6, class: 'debug-exit' }));
-  }
-  card.append(root);
+  // الخريطة كاملة (لا الجزء حول الطريق كما في واجهة الطلاب) ليرى الفريق الطريق في سياقه.
+  const map = createMap(leg, `خريطة ${LEVEL_NAMES[leg.level]}`);
+  drawLeg(map, leg, last);
+  card.append(map.root);
 
   const list = el('ol', 'debug-steps');
   for (const step of leg.steps) list.append(el('li', undefined, step));
@@ -226,20 +169,16 @@ function render(root: HTMLElement): void {
       levels.append(button);
     }
     const floor = firstFloorOf(tapLevel);
-    const { root: map, layer } = mapView(floor, `خريطة ${LEVEL_NAMES[tapLevel]}`);
-    map.classList.add('debug-map--pick');
-    map.addEventListener('click', (event) => {
-      const rect = map.getBoundingClientRect();
-      const x = Math.round(((event.clientX - rect.left) / rect.width) * floor.width);
-      const y = Math.round(((event.clientY - rect.top) / rect.height) * floor.height);
-      tap = `tap:${floor.id}:${x}:${y}`;
+    const map = createMap(floor, `خريطة ${LEVEL_NAMES[tapLevel]}`);
+    map.root.classList.add('map--pick');
+    map.root.addEventListener('click', (event) => {
+      const { x, y } = tapPosition(map, event);
+      tap = encodeTap(floor.id, x, y);
       update();
     });
-    if (tap) {
-      const [, , x, y] = tap.split(':');
-      layer.append(svg('circle', { cx: Number(x), cy: Number(y), r: 13, class: 'debug-start' }));
-    }
-    picker.append(levels, map);
+    const start = parseStart(tap);
+    if (start && 'x' in start) drawStart(map, start.x, start.y);
+    picker.append(levels, map.root);
   };
 
   const update = (): void => {
