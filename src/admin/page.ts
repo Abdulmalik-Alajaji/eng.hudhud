@@ -36,6 +36,7 @@ import {
   placeIdPrefix,
   pointUsage,
   setCorridorLength,
+  toFiles,
   updateDoctor,
   updatePassage,
   updatePlace,
@@ -63,7 +64,12 @@ const REPO = 'github.com/Abdulmalik-Alajaji/eng.hudhud';
 
 export function startAdmin(root: HTMLElement, published: Record<string, unknown> = loadDataFiles()): void {
   const base = fingerprint(published);
-  const draft = loadDraft();
+  let draft = loadDraft();
+  // المسودة تطابق المنشور الآن (رفعها الفريق ودُمجت، أو لم يتغير فيها شيء): لا حاجة لها.
+  if (draft && fingerprint(toFiles(draft.data)) === base) {
+    clearDraft();
+    draft = null;
+  }
   const editor = new Editor(draft?.data ?? fromFiles(published));
   /** المسودة بدأت من بيانات منشورة أقدم مما هو منشور الآن. */
   let staleDraft = Boolean(draft && draft.base !== base);

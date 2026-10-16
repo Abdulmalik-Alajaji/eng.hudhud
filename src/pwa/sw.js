@@ -10,6 +10,8 @@
  * - بعدها: كل طلب يُجاب من المحفوظ أولاً، فيعمل الموقع بلا نت وبسرعة على شبكة ضعيفة.
  * - عند نشر نسخة جديدة يتغير رقم النسخة، فيحفظ المتصفح النسخة الجديدة في الخلفية،
  *   وتظهر في الفتح التالي. لا تُعاد تحميل صفحة مفتوحة حتى لا يضيع على الطالب ما يقرؤه.
+ * - صفحات الفريق (الإدارة وتجربة المسارات والمعاينة) تُطلب من النت أولاً، والمحفوظ بلا نت فقط:
+ *   صفحة الإدارة يجب أن تعرض آخر بيانات منشورة، وإلا عدّل الفريق نسخة قديمة وألغى برفعها تعديلاً دُمج.
  */
 
 const VERSION = '__HUDHUD_VERSION__';
@@ -17,6 +19,8 @@ const BASE = '__HUDHUD_BASE__';
 /** كل ملفات الموقع بمساراتها الكاملة، مثل /eng.hudhud/index.html. */
 const PRECACHE = __HUDHUD_PRECACHE__;
 const PREFIX = 'hudhud-';
+/** صفحات تُطلب من النت أولاً (انظر أعلاه). */
+const NETWORK_FIRST = ['admin.html', 'debug.html', 'preview.html'];
 const CACHE = `${PREFIX}${VERSION}`;
 
 self.addEventListener('install', (event) => {
@@ -56,6 +60,13 @@ async function respond(request, url) {
   const key = navigate ? (url.pathname.endsWith('/') ? `${url.pathname}index.html` : url.pathname) : request;
   const options = { ignoreSearch: navigate };
   const cache = await caches.open(CACHE);
+  if (navigate && NETWORK_FIRST.some((page) => url.pathname === `${BASE}${page}`)) {
+    try {
+      return await fetch(request);
+    } catch {
+      // بلا نت: المحفوظ أدناه.
+    }
+  }
   // النسخة الحالية أولاً، ثم السابقة (لصفحة مفتوحة منها).
   const cached = (await cache.match(key, options)) ?? (await caches.match(key, options));
   if (cached) return cached;

@@ -88,13 +88,27 @@ describe('صفحة الإدارة', () => {
     expect(root.querySelectorAll('.adm-files li')).toHaveLength(2);
   });
 
+  it('مسودة تطابق المنشور الآن (رُفعت ودُمجت): تُحذف بلا تنبيه', () => {
+    const data = {
+      buildings: (published['/data/buildings.json'] as { buildings: unknown }).buildings,
+      floors: Object.entries(published).filter(([p]) => p.startsWith('/data/floors/')).map(([, f]) => f),
+      vertical: (published['/data/links.json'] as { vertical: unknown }).vertical,
+      passages: (published['/data/links.json'] as { passages: unknown }).passages,
+      doctors: (published['/data/doctors.json'] as { doctors: unknown }).doctors,
+    };
+    localStorage.setItem(DRAFT_KEY, JSON.stringify({ base: 'old', savedAt: '', data }));
+    startAdmin(root, published);
+    expect(root.querySelector('.adm-notice')).toBeNull();
+    expect(localStorage.getItem(DRAFT_KEY)).toBeNull();
+  });
+
   it('البيانات المنشورة تغيّرت منذ بدأت المسودة: تنبيه وخياران', () => {
     localStorage.setItem(DRAFT_KEY, JSON.stringify({ base: 'old', savedAt: '', data: JSON.parse(JSON.stringify({
       buildings: (published['/data/buildings.json'] as { buildings: unknown }).buildings,
       floors: Object.entries(published).filter(([p]) => p.startsWith('/data/floors/')).map(([, f]) => f),
       vertical: (published['/data/links.json'] as { vertical: unknown }).vertical,
       passages: (published['/data/links.json'] as { passages: unknown }).passages,
-      doctors: (published['/data/doctors.json'] as { doctors: unknown }).doctors,
+      doctors: [...(published['/data/doctors.json'] as { doctors: unknown[] }).doctors, { id: 'd99', name: 'د. مسودة', office: 'B1-F202', demo: true }],
     })) }));
     startAdmin(root, published);
     expect(root.querySelector('.adm-notice')?.textContent).toContain('تغيّرت منذ بدأت هذه المسودة');
