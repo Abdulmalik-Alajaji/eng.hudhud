@@ -10,7 +10,10 @@ const PIXEL_RATIOS = [2, 1.5, 1] as const;
 /** إذا زاد متوسط زمن الإطار عن هذا الحد (ملّي ثانية) على مدى ثانية، نخفض الدقة درجة. */
 const SLOW_FRAME = 18;
 
-/** calm/medium/strong: الهدهد المتحرك بدرجات الصواعق. still: ثابت (علامة الوجهة على الخريطة). */
+/**
+ * calm/medium/strong: الهدهد المتحرك بدرجات الصواعق، والمعتمدة strong (اختيار الفريق).
+ * still: ثابت (علامة الوجهة على الخريطة).
+ */
 export type HudhudVariant = Level | 'still';
 
 export interface HudhudOptions {
@@ -58,7 +61,7 @@ function prefersReducedMotion(): MediaQueryList | null {
  * يتوقف حين تكون الصفحة في الخلفية أو حين يخرج من الشاشة، ويظهر ثابتاً مع «تقليل الحركة».
  */
 export function createHudhud(
-  variant: HudhudVariant = 'calm',
+  variant: HudhudVariant = 'strong',
   label = 'هدهد الهندسة',
   options: HudhudOptions = {},
 ): HTMLElement {
