@@ -14,10 +14,10 @@ describe('renderApp', () => {
     expect(root.querySelector('h1')?.textContent).toBe(APP_TITLE);
   });
 
-  it('يعرض الهدهد المتحرك (الدرجة المتوسطة مؤقتاً حتى يختار الفريق)', () => {
+  it('يعرض الهدهد المتحرك بالدرجة المعتمدة (قوي)', () => {
     renderApp(root, { demo: false });
     const hudhud = root.querySelector('.hudhud');
-    expect(hudhud?.classList.contains('hudhud--medium')).toBe(true);
+    expect(hudhud?.classList.contains('hudhud--strong')).toBe(true);
     expect(hudhud?.getAttribute('aria-label')).toBe(APP_TITLE);
   });
 
