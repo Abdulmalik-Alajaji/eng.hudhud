@@ -1,0 +1,67 @@
+/*
+ * الخريطة وخط الطريق (واجهة الطلاب وصفحة تجربة المسارات). ألوان الخريطة اختيار Claude،
+ * وسمح الفريق بتغييرها لتناسب التصميم: الطريق أزرق سماوي بإطار أسود، والبداية دائرة بيضاء،
+ * ونهاية المقطع عند الدرج أو المصعد مربع أزرق، والوجهة الهدهد الثابت.
+ * أحجام الخطوط والعلامات تُحسب في map-view.ts لتبقى ثابتة مهما كُبّرت الخريطة.
+ */
+
+.map {
+  position: relative;
+  width: 100%;
+  border-radius: 12px;
+  background: var(--bg);
+  overflow: hidden;
+  /* الإحداثيات على الخريطة فيزيائية (يسار/يمين الصورة) لا تتبع اتجاه الصفحة */
+  direction: ltr;
+}
+
+.map--pick {
+  cursor: crosshair;
+  touch-action: manipulation;
+}
+
+.map__layer {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.map-route,
+.map-route__casing {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.map-route__casing {
+  stroke: var(--bg);
+}
+
+.map-route {
+  stroke: var(--hudhud-color);
+}
+
+.map-start {
+  fill: var(--text);
+  stroke: var(--bg);
+}
+
+.map-exit {
+  fill: var(--bolt-color);
+  stroke: var(--bg);
+}
+
+/* الوجهة: الهدهد الثابت بإطار أسود رفيع حتى يبرز فوق الخريطة. */
+.map-destination {
+  color: var(--hudhud-color);
+  overflow: visible;
+}
+
+.map-destination path {
+  stroke: var(--bg);
+  stroke-width: 36;
+  stroke-linejoin: round;
+  paint-order: stroke fill;
+}

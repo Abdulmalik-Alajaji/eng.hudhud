@@ -113,67 +113,6 @@
   font-weight: 700;
 }
 
-/* الخريطة: الصورة وفوقها طبقة رسم بإحداثيات الصورة نفسها. */
-.debug-map {
-  position: relative;
-  width: 100%;
-  border-radius: 12px;
-  background: var(--bg);
-  /* الهدهد عند وجهة قرب الحافة يظهر خارج الخريطة بدل أن يُقص */
-  overflow: visible;
-  /* الإحداثيات على الخريطة فيزيائية (يسار/يمين الصورة) لا تتبع اتجاه الصفحة */
-  direction: ltr;
-}
-
-.debug-map--pick {
-  cursor: crosshair;
-}
-
-.debug-map__image,
-.debug-map__layer {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.debug-route,
-.debug-route__casing {
-  fill: none;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.debug-route__casing {
-  stroke: var(--bg);
-  stroke-width: 16;
-}
-
-.debug-route {
-  stroke: var(--hudhud-color);
-  stroke-width: 9;
-}
-
-.debug-start {
-  fill: var(--text);
-  stroke: var(--bg);
-  stroke-width: 5;
-}
-
-.debug-exit {
-  fill: var(--bolt-color);
-  stroke: var(--bg);
-  stroke-width: 5;
-}
-
-/* الوجهة: الهدهد الثابت، قدماه عند النقطة. */
-.debug-destination {
-  --hudhud-size: 40px;
-  position: absolute;
-  transform: translate(-50%, -96%);
-  filter: drop-shadow(0 0 2px #000) drop-shadow(0 0 1px #000);
-}
-
 .debug-steps {
   margin: 0;
   padding-inline-start: 1.5em;
