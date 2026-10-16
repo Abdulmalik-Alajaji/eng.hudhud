@@ -21,6 +21,8 @@ export interface AppOptions {
   demo: boolean;
   /** البيانات بعد فحصها، أو null إذا كان فيها خطأ. */
   dataset: Dataset | null;
+  /** يظهر أسفل شاشة الاختيار فقط، مثل بطاقة الإضافة إلى الشاشة الرئيسية (src/pwa/install.ts). */
+  footer?: HTMLElement | null;
 }
 
 /** طريقة تحديد الموقع: أقرب قاعة أو مرفق (الأدق)، أو النقر على الخريطة، أو معلم من القائمة. */
@@ -355,7 +357,7 @@ export function renderApp(root: HTMLElement, options: AppOptions): void {
   };
 
   const showForm = (): void => {
-    view.replaceChildren(hero, plannerRoot);
+    view.replaceChildren(hero, plannerRoot, ...(options.footer ? [options.footer] : []));
     renderPlanner();
   };
 

@@ -156,3 +156,20 @@ describe('renderApp', () => {
     expect(root.querySelector('.notice--error')?.textContent).toContain('غير موجودة');
   });
 });
+
+describe('renderApp: ما يظهر أسفل شاشة الاختيار', () => {
+  it('يظهر أسفل النموذج ويختفي في شاشة الطريق', () => {
+    history.replaceState(null, '', '/');
+    const root = document.createElement('div');
+    document.body.append(root);
+    const footer = document.createElement('section');
+    footer.className = 'install';
+    renderApp(root, { demo: false, dataset, footer });
+    expect(root.querySelector('.view')?.lastElementChild).toBe(footer);
+    history.replaceState(null, '', '/#from=B1-G-EN1&to=B1-G-CAF');
+    window.dispatchEvent(new HashChangeEvent('hashchange'));
+    expect(root.querySelector('.install')).toBeNull();
+    renderApp(root, { demo: false, dataset: null });
+    root.remove();
+  });
+});
