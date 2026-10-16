@@ -1,0 +1,46 @@
+{
+  "id": "B2-G",
+  "building": "B2",
+  "level": "G",
+  "map": null,
+  "width": 1000,
+  "height": 600,
+  "demo": true,
+  "points": [
+    { "id": "B2-G:p1", "x": 100, "y": 400 },
+    { "id": "B2-G:p2", "x": 200, "y": 400 },
+    { "id": "B2-G:p3", "x": 300, "y": 400 },
+    { "id": "B2-G:p4", "x": 400, "y": 400 },
+    { "id": "B2-G:p5", "x": 500, "y": 400 },
+    { "id": "B2-G:p6", "x": 600, "y": 400 },
+    { "id": "B2-G:p7", "x": 700, "y": 400 },
+    { "id": "B2-G:p8", "x": 700, "y": 300 },
+    { "id": "B2-G:p9", "x": 700, "y": 200 },
+    { "id": "B2-G:p10", "x": 700, "y": 100 }
+  ],
+  "corridors": [
+    { "from": "B2-G:p1", "to": "B2-G:p2", "length_m": 5 },
+    { "from": "B2-G:p2", "to": "B2-G:p3", "length_m": 5.1 },
+    { "from": "B2-G:p3", "to": "B2-G:p4", "length_m": 5.2 },
+    { "from": "B2-G:p4", "to": "B2-G:p5", "length_m": 4.9 },
+    { "from": "B2-G:p5", "to": "B2-G:p6", "length_m": 5 },
+    { "from": "B2-G:p6", "to": "B2-G:p7", "length_m": 5.1 },
+    { "from": "B2-G:p7", "to": "B2-G:p8", "length_m": 4.9 },
+    { "from": "B2-G:p8", "to": "B2-G:p9", "length_m": 5 },
+    { "from": "B2-G:p9", "to": "B2-G:p10", "length_m": 5.1 }
+  ],
+  "places": [
+    { "id": "B2-G-ST1", "kind": "stairs", "name": "الدرج", "point": "B2-G:p3", "demo": true },
+    { "id": "B2-G-ST2", "kind": "stairs", "name": "الدرج الشمالي", "point": "B2-G:p10", "demo": true },
+    { "id": "B2-G-EL1", "kind": "elevator", "name": "المصعد", "point": "B2-G:p7", "demo": true },
+    { "id": "B2-G-EN1", "kind": "entrance", "name": "مدخل المبنى 2", "point": "B2-G:p6", "landmark": true, "demo": true },
+    { "id": "B2-G101", "kind": "room", "point": "B2-G:p2", "demo": true },
+    { "id": "B2-G102", "kind": "room", "point": "B2-G:p4", "demo": true },
+    { "id": "B2-G103", "kind": "room", "point": "B2-G:p5", "demo": true },
+    { "id": "B2-G110", "kind": "lab", "name": "معمل الميكانيكا", "point": "B2-G:p8", "demo": true },
+    { "id": "B2-G111", "kind": "lab", "name": "ورشة التصنيع", "point": "B2-G:p9", "demo": true },
+    { "id": "B2-G-HALL", "kind": "facility", "name": "المسرح", "point": "B2-G:p5", "landmark": true, "demo": true },
+    { "id": "B2-G-WC1", "kind": "facility", "name": "دورة مياه الرجال", "point": "B2-G:p10", "demo": true },
+    { "id": "B2-G-WC2", "kind": "facility", "name": "دورة مياه النساء", "point": "B2-G:p9", "demo": true }
+  ]
+}

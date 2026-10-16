@@ -1,0 +1,6 @@
+{
+  "buildings": [
+    { "id": "B1", "name": "المبنى 1", "demo": true },
+    { "id": "B2", "name": "المبنى 2", "demo": true }
+  ]
+}

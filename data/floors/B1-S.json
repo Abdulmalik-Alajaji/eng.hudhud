@@ -1,0 +1,52 @@
+{
+  "id": "B1-S",
+  "building": "B1",
+  "level": "S",
+  "map": null,
+  "width": 1000,
+  "height": 600,
+  "demo": true,
+  "points": [
+    { "id": "B1-S:p1", "x": 100, "y": 300 },
+    { "id": "B1-S:p2", "x": 200, "y": 300 },
+    { "id": "B1-S:p3", "x": 300, "y": 300 },
+    { "id": "B1-S:p4", "x": 400, "y": 300 },
+    { "id": "B1-S:p5", "x": 500, "y": 300 },
+    { "id": "B1-S:p6", "x": 600, "y": 300 },
+    { "id": "B1-S:p7", "x": 700, "y": 300 },
+    { "id": "B1-S:p8", "x": 800, "y": 300 },
+    { "id": "B1-S:p9", "x": 900, "y": 300 },
+    { "id": "B1-S:p10", "x": 500, "y": 200 },
+    { "id": "B1-S:p11", "x": 500, "y": 100 },
+    { "id": "B1-S:p12", "x": 500, "y": 400 },
+    { "id": "B1-S:p13", "x": 500, "y": 500 }
+  ],
+  "corridors": [
+    { "from": "B1-S:p1", "to": "B1-S:p2", "length_m": 5.2 },
+    { "from": "B1-S:p2", "to": "B1-S:p3", "length_m": 4.9 },
+    { "from": "B1-S:p3", "to": "B1-S:p4", "length_m": 5 },
+    { "from": "B1-S:p4", "to": "B1-S:p5", "length_m": 5.1 },
+    { "from": "B1-S:p5", "to": "B1-S:p6", "length_m": 4.9 },
+    { "from": "B1-S:p6", "to": "B1-S:p7", "length_m": 5 },
+    { "from": "B1-S:p7", "to": "B1-S:p8", "length_m": 5.1 },
+    { "from": "B1-S:p8", "to": "B1-S:p9", "length_m": 5.2 },
+    { "from": "B1-S:p5", "to": "B1-S:p10", "length_m": 4.9 },
+    { "from": "B1-S:p10", "to": "B1-S:p11", "length_m": 5 },
+    { "from": "B1-S:p5", "to": "B1-S:p12", "length_m": 5.1 },
+    { "from": "B1-S:p12", "to": "B1-S:p13", "length_m": 4.9 }
+  ],
+  "places": [
+    { "id": "B1-S-ST1", "kind": "stairs", "name": "الدرج الغربي", "point": "B1-S:p2", "demo": true },
+    { "id": "B1-S-ST2", "kind": "stairs", "name": "الدرج الشمالي", "point": "B1-S:p11", "demo": true },
+    { "id": "B1-S-EL1", "kind": "elevator", "name": "المصعد", "point": "B1-S:p6", "demo": true },
+    { "id": "B1-S301", "kind": "room", "point": "B1-S:p3", "demo": true },
+    { "id": "B1-S302", "kind": "room", "point": "B1-S:p4", "demo": true },
+    { "id": "B1-S303", "kind": "room", "point": "B1-S:p7", "demo": true },
+    { "id": "B1-S304", "kind": "room", "point": "B1-S:p8", "demo": true },
+    { "id": "B1-S310", "kind": "office", "point": "B1-S:p12", "demo": true },
+    { "id": "B1-S311", "kind": "office", "point": "B1-S:p13", "demo": true },
+    { "id": "B1-S312", "kind": "office", "point": "B1-S:p10", "demo": true },
+    { "id": "B1-S-LIB", "kind": "facility", "name": "المكتبة", "point": "B1-S:p9", "landmark": true, "demo": true },
+    { "id": "B1-S-WC1", "kind": "facility", "name": "دورة مياه الرجال", "point": "B1-S:p13", "demo": true }
+  ]
+}
