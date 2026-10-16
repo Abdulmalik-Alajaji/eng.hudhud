@@ -34,7 +34,7 @@
 | [#3](https://github.com/Abdulmalik-Alajaji/eng.hudhud/pull/3) | اعتماد الصواعق الهادئة في الصفحة الرئيسية (استُبدل لاحقاً) | دُمج 2026-10-15 |
 | [#4](https://github.com/Abdulmalik-Alajaji/eng.hudhud/pull/4) | إعادة بناء الحركة: أجزاء متحركة وصواعق مرسومة برمجياً | دُمج 2026-10-15 |
 | [#5](https://github.com/Abdulmalik-Alajaji/eng.hudhud/pull/5) | اعتماد درجة الصواعق القوية | دُمج 2026-10-16 |
-| Pull Request جديد على الفرع `identity/strong` | هذا التسليم: `PROGRESS.md` و`CLAUDE.md` فقط | مفتوح (رابطه في رد الجلسة الأخير) |
+| [#6](https://github.com/Abdulmalik-Alajaji/eng.hudhud/pull/6) | هذا التسليم: `PROGRESS.md` و`CLAUDE.md` فقط (لأن #5 كان مدموجاً) | مفتوح، لم يُدمج بعد |
 
 الملفات (بحسب GitHub):
 - **#1** أضاف: `.github/workflows/deploy.yml`، `.gitignore`، `CLAUDE.md`، `PROGRESS.md`، `index.html`، `package.json`، `package-lock.json`، `tsconfig.json`، `vite.config.ts`، `data/README.md`، `materials/README.md`، `public/maps/.gitkeep`، `scripts/check-build.mjs`، `scripts/check-secrets.mjs`، `scripts/lib/build-checks.mjs` واختباره، `scripts/lib/secrets.mjs` واختباره، `src/main.ts`، `src/app.ts` واختباره، `src/data/demo.ts` واختباره، `src/demo-banner.ts`، `src/index-html.test.ts`، `src/styles/main.css`، و4 ملفات خط في `src/assets/fonts/` مع رخصتها. وعدّل `README.md`.
