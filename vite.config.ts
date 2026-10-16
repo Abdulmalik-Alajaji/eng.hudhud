@@ -1,6 +1,8 @@
-import { resolve } from 'node:path';
+import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { join, relative, resolve } from 'node:path';
 import { defineConfig } from 'vitest/config';
 import type { Plugin } from 'vite';
+import { SERVICE_WORKER, cacheVersion, isPrecached, precacheUrls, renderServiceWorker } from './scripts/lib/pwa.mjs';
 
 // اسم المستودع على GitHub Pages: الموقع يُنشر تحت هذا المسار.
 const BASE = '/eng.hudhud/';
@@ -46,9 +48,43 @@ function cspPlugin(): Plugin {
   };
 }
 
+function walk(dir: string): string[] {
+  return readdirSync(dir, { withFileTypes: true }).flatMap((entry) =>
+    entry.isDirectory() ? walk(join(dir, entry.name)) : [join(dir, entry.name)],
+  );
+}
+
+/**
+ * العمل بدون نت: بعد كتابة الموقع في dist/ يُكتب dist/sw.js من القالب src/pwa/sw.js
+ * بقائمة كل الملفات المبنية ورقم نسخة يتغير مع أي تغيير فيها. يسجّله src/pwa/register.ts.
+ */
+function pwaPlugin(): Plugin {
+  let outDir = 'dist';
+  return {
+    name: 'hudhud-pwa',
+    apply: 'build',
+    configResolved(config) {
+      outDir = resolve(config.root, config.build.outDir);
+    },
+    closeBundle() {
+      const files = walk(outDir)
+        .map((file) => relative(outDir, file).replaceAll('\\', '/'))
+        .filter(isPrecached)
+        .map((path) => ({ path, content: readFileSync(join(outDir, path)) }));
+      const template = readFileSync(resolve(import.meta.dirname, 'src/pwa/sw.js'), 'utf8');
+      const sw = renderServiceWorker(template, {
+        version: cacheVersion(files),
+        base: BASE,
+        urls: precacheUrls(files.map((f) => f.path), BASE),
+      });
+      writeFileSync(join(outDir, SERVICE_WORKER), sw);
+    },
+  };
+}
+
 export default defineConfig({
   base: BASE,
-  plugins: [cspPlugin()],
+  plugins: [cspPlugin(), pwaPlugin()],
   build: {
     target: ['es2022', 'safari15', 'chrome100'],
     sourcemap: false,
