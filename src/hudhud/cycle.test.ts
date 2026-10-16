@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { type Cycle, type Level, LEVELS, MAX_FLASHES_PER_SECOND, boltIntensity, buildCycle } from './cycle';
+import { CREST_RAISED, type Cycle, type Level, LEVELS, MAX_FLASHES_PER_SECOND, boltIntensity, buildCycle } from './cycle';
 import { hold } from './easing';
 import { createRandom } from './random';
 
@@ -91,14 +91,22 @@ describe('الحركة', () => {
     expect(Math.max(...samples.slice(lowest, lowest + 60))).toBeGreaterThan(1);
   });
 
-  it('التاج يُفرد عند الالتفات ثم ينطوي', () => {
+  it('التاج يرتفع قليلاً عند الالتفات ثم يعود كما في الصورة', () => {
     const { cycle } = cycles('calm', 4, 1)[0]!;
     const flip = cycle.tracks.flip;
     const crest = cycle.tracks.crest;
     const times = Array.from({ length: 1500 }, (_, i) => i * 10);
     const turned = times.find((t) => flip.sample(t) < 0)!;
-    expect(crest.sample(turned)).toBeGreaterThan(0.9);
-    expect(crest.sample(cycle.duration)).toBeLessThan(0.5);
+    expect(crest.sample(turned)).toBeLessThan(CREST_RAISED / 2);
+    expect(crest.sample(cycle.duration)).toBeCloseTo(0, 6);
+  });
+
+  it('حركة التاج خفيفة: بضع درجات فقط في كل الدورات', () => {
+    for (const { cycle } of cycles('strong', 11, 4)) {
+      for (let t = 0; t <= cycle.duration; t += 5) {
+        expect(Math.abs(cycle.tracks.crest.sample(t))).toBeLessThanOrEqual(10);
+      }
+    }
   });
 
   it('شدة الصاعقة تظهر وتختفي ثم تتلاشى', () => {

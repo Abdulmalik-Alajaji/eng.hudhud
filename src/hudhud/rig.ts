@@ -27,7 +27,6 @@ const rotate = (rad: number): Matrix => {
   return [c, s, -s, c, 0, 0];
 };
 const scale = (sx: number, sy: number): Matrix => [sx, 0, 0, sy, 0, 0];
-const skewX = (k: number): Matrix => [1, 0, k, 1, 0, 0];
 
 /** تحويل m حول النقطة p: انقل p إلى الأصل، طبّق m، ثم أرجعها. */
 function around([x, y]: Point, m: Matrix): Matrix {
@@ -45,7 +44,10 @@ export interface Pose {
   head: number;
   /** 1 = الرأس للأمام، -1 = ملتفت للخلف. */
   flip: number;
-  /** 0 = التاج مطويّ للخلف، 1 = مفرود كاملاً كما في الصورة (ويمكن تجاوزه قليلاً). */
+  /**
+   * ميل التاج بالدرجات، قطعة واحدة صلبة لا تنثني: 0 كما في الصورة، الموجب ينضغط للخلف، والسالب يرتفع.
+   * الحركة خفيفة (بضع درجات) لأن ريش الهدهد لا ينثني كالمطاط.
+   */
   crest: number;
   tail: number;
   /** 0..1: التنفّس. */
@@ -59,7 +61,7 @@ export const REST_POSE: Pose = {
   body: 0,
   head: 0,
   flip: 1,
-  crest: 0.3,
+  crest: 0,
   tail: 0,
   breath: 0,
   joltX: 0,
@@ -85,13 +87,10 @@ export function partMatrices(pose: Pose): Record<PartName, Matrix> {
     around(RIG_JOINTS.neck, multiply(rotate(pose.head * DEG), scale(pose.flip, 1))),
   );
 
-  // التاج: قاعدته ثابتة، والريش يُضغط نحو الرأس ويميل للخلف حين ينطوي.
-  const [base, nape] = RIG_JOINTS.crestBase;
-  const axis = Math.atan2(nape[1] - base[1], nape[0] - base[0]);
-  const open = pose.crest;
-  const fold = multiply(scale(1, 0.55 + 0.45 * open), skewX(-1.1 * (1 - open)));
-  const crestLocal = around(base, multiply(rotate(axis), multiply(fold, rotate(-axis))));
-  const crest = multiply(head, crestLocal);
+  // التاج قطعة صلبة لا يتغير شكله. ينضغط للخلف حول مقدّم قاعدته، ويرتفع حول مؤخرها،
+  // فتبقى القاعدة ملتصقة بالرأس في الحالتين ولا تظهر فجوة.
+  const [front, back] = RIG_JOINTS.crestBase;
+  const crest = multiply(head, around(pose.crest >= 0 ? front : back, rotate(pose.crest * DEG)));
 
   return { legs, tail, body, head, crest };
 }

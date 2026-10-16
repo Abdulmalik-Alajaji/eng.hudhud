@@ -9,7 +9,7 @@ describe('أجزاء الهدهد', () => {
   });
 
   it('في الوضع الطبيعي تبقى الساقان والجسم والذيل والرأس في مكانها', () => {
-    const pose = { ...REST_POSE, crest: 1 };
+    const pose = REST_POSE;
     for (const part of ['legs', 'body', 'tail', 'head', 'crest'] as const) {
       const [x, y] = worldPoint(pose, part, [300, 300]);
       expect(x).toBeCloseTo(300, 6);
@@ -31,13 +31,23 @@ describe('أجزاء الهدهد', () => {
     expect(hip[1]).toBeCloseTo(RIG_JOINTS.hip[1], 6);
   });
 
-  it('قاعدة التاج ثابتة حين ينطوي التاج أو يُفرد', () => {
-    for (const crest of [0, 0.3, 1, 1.1]) {
+  it('قاعدة التاج تبقى على الرأس: المقدّم ثابت حين ينضغط، والمؤخر ثابت حين يرتفع', () => {
+    for (const crest of [-7, -0.5, 0, 6, 10]) {
+      const [x, y] = RIG_JOINTS.crestBase[crest >= 0 ? 0 : 1];
       const m = partMatrices({ ...REST_POSE, crest }).crest;
-      for (const [x, y] of RIG_JOINTS.crestBase) {
-        expect(m[0] * x + m[2] * y + m[4]).toBeCloseTo(x, 6);
-        expect(m[1] * x + m[3] * y + m[5]).toBeCloseTo(y, 6);
-      }
+      expect(m[0] * x + m[2] * y + m[4]).toBeCloseTo(x, 6);
+      expect(m[1] * x + m[3] * y + m[5]).toBeCloseTo(y, 6);
+    }
+  });
+
+  it('التاج قطعة صلبة لا تنثني ولا تنضغط: دوران فقط بلا تمدد ولا ميل', () => {
+    for (const crest of [-7, 6, 10]) {
+      const pose = { ...REST_POSE, crest };
+      // التاج بالنسبة للرأس: نلغي حركة الرأس لنرى حركة التاج وحده.
+      const [a, b, c, d] = partMatrices({ ...pose, head: 0 }).crest;
+      expect(a).toBeCloseTo(d, 9);
+      expect(b).toBeCloseTo(-c, 9);
+      expect(a * d - b * c).toBeCloseTo(1, 9);
     }
   });
 
