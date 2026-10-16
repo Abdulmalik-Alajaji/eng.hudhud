@@ -1,0 +1,44 @@
+{
+  "id": "B2-S",
+  "building": "B2",
+  "level": "S",
+  "map": "maps/demo-campus.svg",
+  "width": 1014,
+  "height": 880,
+  "demo": true,
+  "points": [
+    { "id": "B2-S:p1", "x": 165, "y": 233 },
+    { "id": "B2-S:p2", "x": 165, "y": 322 },
+    { "id": "B2-S:p3", "x": 207, "y": 322 },
+    { "id": "B2-S:p4", "x": 165, "y": 394 },
+    { "id": "B2-S:p5", "x": 35, "y": 467 },
+    { "id": "B2-S:p6", "x": 100, "y": 467 },
+    { "id": "B2-S:p7", "x": 165, "y": 467 },
+    { "id": "B2-S:p8", "x": 199, "y": 467 },
+    { "id": "B2-S:p9", "x": 165, "y": 538 },
+    { "id": "B2-S:p10", "x": 165, "y": 609 }
+  ],
+  "corridors": [
+    { "from": "B2-S:p2", "to": "B2-S:p3", "length_m": 10.8 },
+    { "from": "B2-S:p5", "to": "B2-S:p6", "length_m": 15.9 },
+    { "from": "B2-S:p6", "to": "B2-S:p7", "length_m": 16.2 },
+    { "from": "B2-S:p7", "to": "B2-S:p8", "length_m": 8.7 },
+    { "from": "B2-S:p1", "to": "B2-S:p2", "length_m": 21.6 },
+    { "from": "B2-S:p2", "to": "B2-S:p4", "length_m": 17.8 },
+    { "from": "B2-S:p4", "to": "B2-S:p7", "length_m": 18.4 },
+    { "from": "B2-S:p7", "to": "B2-S:p9", "length_m": 18.3 },
+    { "from": "B2-S:p9", "to": "B2-S:p10", "length_m": 17.4 }
+  ],
+  "places": [
+    { "id": "B2-S-ST1", "kind": "stairs", "name": "الدرج", "point": "B2-S:p2", "demo": true },
+    { "id": "B2-S-EL1", "kind": "elevator", "name": "المصعد", "point": "B2-S:p7", "demo": true },
+    { "id": "B2-S301", "kind": "room", "point": "B2-S:p1", "demo": true },
+    { "id": "B2-S302", "kind": "office", "point": "B2-S:p3", "demo": true },
+    { "id": "B2-S303", "kind": "room", "point": "B2-S:p4", "demo": true },
+    { "id": "B2-S304", "kind": "lab", "name": "معمل المواد", "point": "B2-S:p5", "demo": true },
+    { "id": "B2-S305", "kind": "office", "point": "B2-S:p6", "demo": true },
+    { "id": "B2-S306", "kind": "room", "point": "B2-S:p8", "demo": true },
+    { "id": "B2-S307", "kind": "room", "point": "B2-S:p9", "demo": true },
+    { "id": "B2-S308", "kind": "office", "point": "B2-S:p10", "demo": true }
+  ]
+}

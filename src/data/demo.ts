@@ -1,3 +1,5 @@
+import { loadDataFiles } from './dataset';
+
 /**
  * البيانات التجريبية: كل عنصر تجريبي يحمل "demo": true.
  * ما دام في البيانات عنصر واحد بهذه العلامة، يظهر شريط «نسخة تجريبية».
@@ -18,11 +20,7 @@ export function containsDemo(value: unknown): boolean {
   return false;
 }
 
-/** كل ملفات JSON داخل مجلد data/ تُضمَّن في الموقع وقت البناء. */
+/** محتوى كل ملفات JSON داخل مجلد data/. */
 export function loadAllData(): unknown[] {
-  const modules = import.meta.glob<unknown>('/data/**/*.json', {
-    eager: true,
-    import: 'default',
-  });
-  return Object.values(modules);
+  return Object.values(loadDataFiles());
 }

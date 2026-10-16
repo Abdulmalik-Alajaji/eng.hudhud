@@ -1,0 +1,13 @@
+{
+  "doctors": [
+    { "id": "d1", "name": "د. أحمد التجريبي", "office": "B1-F202", "demo": true },
+    { "id": "d2", "name": "د. إيمان التجريبية", "office": "B1-F205", "demo": true },
+    { "id": "d3", "name": "د. يوسف التجريبي", "office": "B1-F208", "demo": true },
+    { "id": "d4", "name": "د. هالة التجريبية", "office": "B1-S302", "demo": true },
+    { "id": "d5", "name": "د. عبدالله التجريبي", "office": "B1-S305", "demo": true },
+    { "id": "d6", "name": "د. نورة التجريبية", "office": "B2-F202", "demo": true },
+    { "id": "d7", "name": "د. خالد التجريبي", "office": "B2-S302", "demo": true },
+    { "id": "d8", "name": "د. ريم التجريبية", "office": "B1-F211", "demo": true },
+    { "id": "d9", "name": "د. سعد التجريبي", "office": "B1-F211", "demo": true }
+  ]
+}
