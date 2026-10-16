@@ -33,7 +33,7 @@
 | [#7](https://github.com/Abdulmalik-Alajaji/eng.hudhud/pull/7) | المرحلة 2: صيغة البيانات، وفحص سلامتها، وخريطة من شكل الكلية الحقيقي، وبيانات تجريبية عليها | دُمج 2026-10-16 |
 | [#8](https://github.com/Abdulmalik-Alajaji/eng.hudhud/pull/8) | التاج الصلب: يميل بضع درجات ولا ينثني كالمطاط | دُمج 2026-10-16 |
 | [#9](https://github.com/Abdulmalik-Alajaji/eng.hudhud/pull/9) | المرحلة 3: محرك المسارات، وصفحة `debug.html`، وعدد الخطوات التقريبي بعد الأمتار | دُمج 2026-10-16 |
-| طلب هذا التسليم (الفرع `docs/session-handoff`) | تحديث `PROGRESS.md` و`CLAUDE.md` فقط | مفتوح عند كتابة هذا القسم |
+| [#10](https://github.com/Abdulmalik-Alajaji/eng.hudhud/pull/10) | تحديث `PROGRESS.md` و`CLAUDE.md` فقط | مفتوح عند كتابة هذا القسم |
 
 الملفات (بحسب GitHub):
 - **#7** أضاف: `data/buildings.json`، `data/links.json`، `data/doctors.json`، و6 ملفات طوابق في `data/floors/` (`B1-G` و`B1-F` و`B1-S` و`B2-G` و`B2-F` و`B2-S`)، `public/maps/demo-campus.svg`، `src/data/types.ts`، `src/data/validate.ts` واختباره، `src/data/dataset.ts`. وعدّل `CLAUDE.md` و`PROGRESS.md` و`data/README.md` و`src/data/demo.ts`.
