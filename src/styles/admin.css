@@ -1,0 +1,569 @@
+/* صفحة الإدارة (admin.html): للفريق. بالهوية نفسها (أسود وأزرق سماوي)، وتعمل على الجوال والحاسوب. */
+
+.adm-header,
+.adm-main {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-inline: max(16px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-left));
+}
+
+.adm-header {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 16px;
+}
+
+.adm-header__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.adm-header h1 {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.adm-muted {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.adm-history {
+  display: flex;
+  gap: 6px;
+}
+
+.adm-status {
+  align-self: flex-start;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.92rem;
+  text-decoration: none;
+}
+
+.adm-status--ok {
+  background: #0d2a3f;
+  color: var(--hudhud-color);
+}
+
+.adm-status--error {
+  background: #3a1414;
+  color: #ffb4ab;
+}
+
+.adm-tabs {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--border);
+}
+
+.adm-tabs__link {
+  flex: none;
+  padding: 10px 14px;
+  border-bottom: 3px solid transparent;
+  color: var(--muted);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.adm-tabs__link[aria-current='page'] {
+  border-bottom-color: var(--hudhud-color);
+  color: var(--text);
+}
+
+.adm-main {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 16px;
+  padding-bottom: calc(env(safe-area-inset-bottom) + 40px);
+}
+
+/* ---------- عناصر النماذج ---------- */
+
+.adm-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.adm-field__label {
+  font-weight: 700;
+  font-size: 0.92rem;
+}
+
+.adm-field__hint {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.adm-input {
+  width: 100%;
+  min-height: 42px;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--text);
+  /* 16px حتى لا يكبّر Safari الآيفون الصفحة عند الكتابة */
+  font: inherit;
+  font-size: 1rem;
+}
+
+.adm-input:focus-visible {
+  outline: 2px solid var(--hudhud-color);
+  outline-offset: 1px;
+}
+
+.adm-input--number {
+  max-width: 10em;
+}
+
+.adm-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+}
+
+.adm-check input {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  accent-color: var(--hudhud-color);
+}
+
+.adm-btn {
+  min-height: 40px;
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--hudhud-color);
+  font: inherit;
+  font-weight: 700;
+}
+
+.adm-btn:disabled {
+  color: var(--muted);
+  opacity: 0.6;
+}
+
+.adm-btn--primary {
+  border-color: transparent;
+  background: var(--hudhud-color);
+  color: var(--bg);
+}
+
+.adm-btn--primary:disabled {
+  background: var(--border);
+}
+
+.adm-btn--danger {
+  color: #ff8a80;
+}
+
+.adm-btn--icon {
+  min-width: 40px;
+  padding: 0;
+  font-size: 1.3rem;
+}
+
+.adm-btn:focus-visible,
+.adm-modes__button:focus-visible,
+.adm-tabs__link:focus-visible {
+  outline: 2px solid var(--hudhud-color);
+  outline-offset: 2px;
+}
+
+.adm-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+/* ---------- البطاقات والقوائم ---------- */
+
+.adm-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+}
+
+.adm-card h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.adm-card summary {
+  font-weight: 700;
+  cursor: pointer;
+}
+
+details.adm-card[open] > summary {
+  margin-bottom: 4px;
+}
+
+.adm-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+}
+
+.adm-item h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.adm-item--missing {
+  border-color: #ff8a80;
+}
+
+.adm-item--doctor {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+@media (min-width: 720px) {
+  .adm-item--doctor {
+    grid-template-columns: 2fr 2fr auto auto;
+    align-items: end;
+  }
+}
+
+.adm-list,
+.adm-stops {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.adm-panel h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.adm-panel h3 {
+  margin: 8px 0 0;
+  font-size: 0.98rem;
+}
+
+.adm-message,
+.adm-notice {
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: #0d2a3f;
+  color: var(--banner-text);
+}
+
+.adm-notice {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.adm-notice p {
+  margin: 0;
+}
+
+.adm-notice--error {
+  background: #3a1414;
+  color: #ffb4ab;
+}
+
+.adm-issues {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding-inline-start: 1.2em;
+  font-size: 0.92rem;
+  overflow-wrap: anywhere;
+}
+
+.adm-issues__error {
+  color: #ffb4ab;
+}
+
+.adm-issues__warning {
+  color: var(--muted);
+}
+
+.adm-files {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.adm-files li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.adm-files code {
+  direction: ltr;
+  overflow-wrap: anywhere;
+}
+
+.adm-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding-inline-start: 1.5em;
+  overflow-wrap: anywhere;
+}
+
+.adm-steps li::marker {
+  color: var(--hudhud-color);
+  font-weight: 700;
+}
+
+/* ---------- محرر الخريطة ---------- */
+
+.adm-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.adm-toolbar .adm-field {
+  flex: 1 1 220px;
+}
+
+.adm-modes {
+  display: flex;
+  gap: 6px;
+}
+
+.adm-modes__button {
+  flex: 1;
+  min-height: 42px;
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.92rem;
+}
+
+.adm-modes__button[aria-pressed='true'] {
+  border-color: var(--hudhud-color);
+  color: var(--hudhud-color);
+  font-weight: 700;
+}
+
+.adm-map-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.adm-map-column {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+@media (min-width: 900px) {
+  .adm-map-layout {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .adm-map-column {
+    flex: 1;
+  }
+
+  .adm-panel {
+    position: sticky;
+    top: 12px;
+    flex: 0 0 340px;
+    max-height: calc(100vh - 24px);
+    overflow-y: auto;
+  }
+}
+
+.adm-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+}
+
+.adm-map-scroll {
+  overflow: auto;
+  max-height: 75vh;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg);
+  -webkit-overflow-scrolling: touch;
+}
+
+.adm-map {
+  position: relative;
+  /* الإحداثيات فيزيائية (يسار/يمين الصورة) لا تتبع اتجاه الصفحة */
+  direction: ltr;
+}
+
+.adm-map__svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.adm-map__blank {
+  fill: #0b0f14;
+}
+
+.adm-corridor {
+  stroke: var(--hudhud-color);
+  stroke-linecap: round;
+}
+
+.adm-corridor--missing {
+  stroke: #ff8a80;
+  stroke-dasharray: 2 1.2;
+}
+
+.adm-corridor--selected {
+  stroke: var(--text);
+}
+
+.adm-hit {
+  stroke: transparent;
+  cursor: pointer;
+}
+
+.adm-point {
+  fill: var(--bg);
+  stroke: var(--hudhud-color);
+  cursor: grab;
+  /* سحب النقطة بالإصبع لا يحرّك الصفحة */
+  touch-action: none;
+}
+
+.adm-point--place {
+  fill: var(--hudhud-color);
+}
+
+.adm-point--passage {
+  stroke: var(--bolt-color);
+}
+
+.adm-point--pending {
+  fill: var(--bolt-color);
+}
+
+.adm-point--selected {
+  fill: var(--text);
+  stroke: var(--text);
+}
+
+.adm-label {
+  fill: var(--text);
+  stroke: var(--bg);
+  paint-order: stroke fill;
+  font-family: var(--font);
+  pointer-events: none;
+}
+
+.adm-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.adm-legend__item::before {
+  content: '';
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-inline-end: 6px;
+  border: 2px solid var(--hudhud-color);
+  border-radius: 50%;
+  vertical-align: middle;
+}
+
+.adm-legend__item--place::before {
+  background: var(--hudhud-color);
+}
+
+.adm-legend__item--missing::before {
+  width: 16px;
+  height: 0;
+  border: 0;
+  border-top: 3px dashed #ff8a80;
+  border-radius: 0;
+}
+
+/* زر اختيار ملف بنص عربي (dom.ts: fileButton). الحقل الأصلي مخفي داخل الزر ويبقى قابلاً للوصول بلوحة المفاتيح. */
+.adm-file {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  cursor: pointer;
+}
+
+.adm-file__input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.adm-file:focus-within {
+  outline: 2px solid var(--hudhud-color);
+  outline-offset: 2px;
+}
+
+.adm-steps code {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+.adm-code {
+  color: var(--muted);
+  font-size: 0.9em;
+  white-space: nowrap;
+}
