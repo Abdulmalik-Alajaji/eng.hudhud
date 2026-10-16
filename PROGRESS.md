@@ -22,7 +22,7 @@
 
 ### المرحلة الحالية
 - المراحل 0 (التأسيس) و1 (الهوية) و2 (صيغة البيانات) **تمت ودُمجت** في `main`، ونجح النشر بعد آخر دمج (حسب سجل GitHub Actions).
-- المرحلة 3 (محرك المسارات) **نُفّذت** في الفرع `route/phase-3` وطلب دمج جديد، **ولم يُدمج بعد**. التفاصيل في قسم «المرحلة 3» أدناه.
+- المرحلة 3 (محرك المسارات) **نُفّذت** في الفرع `route/phase-3` وطلب الدمج [#9](https://github.com/Abdulmalik-Alajaji/eng.hudhud/pull/9)، **ولم يُدمج بعد**. التفاصيل في قسم «المرحلة 3» أدناه.
 - المرحلة التالية بعد الدمج: **4 (الواجهة)**.
 - الموقع: https://abdulmalik-alajaji.github.io/eng.hudhud/ وصفحة المعاينة `preview.html`، وبعد دمج المرحلة 3 صفحة تجربة المسارات `debug.html`. أكّد الفريق أن الرابط يعمل بعد المرحلة 0. لم أفتح الرابط بنفسي بعد آخر دمج لأن البيئة تمنع ذلك (غير مؤكد أنه يعرض آخر نسخة، لكن مرحلة النشر نجحت).
 
@@ -38,7 +38,7 @@
 | [#6](https://github.com/Abdulmalik-Alajaji/eng.hudhud/pull/6) | هذا التسليم، ثم أجوبة الفريق: نمط الرموز `B1-F215`، والتنفيذ بلا عرض خطة، ومكان المواد الحساسة. عدّل `PROGRESS.md` و`CLAUDE.md` و`materials/README.md` و`data/README.md` و`src/data/demo.test.ts` (رموز الأمثلة فقط) | دُمج 2026-10-16. كان متعارضاً مع `main` لأن مجلد `materials/` حُذف منه بالخطأ، فحُلّ التعارض واستُرجع المجلد في هذا الطلب نفسه |
 | [#7](https://github.com/Abdulmalik-Alajaji/eng.hudhud/pull/7) | المرحلة 2: صيغة البيانات، وفحص سلامتها، والبيانات التجريبية على شكل الكلية الحقيقي | دُمج 2026-10-16 |
 | [#8](https://github.com/Abdulmalik-Alajaji/eng.hudhud/pull/8) | التاج الصلب: يميل بضع درجات ولا ينثني (الفرع `identity/rigid-crest`) | دُمج 2026-10-16 |
-| المرحلة 3 (الفرع `route/phase-3`) | محرك المسارات وصفحة تجربة المسارات `debug.html` | مفتوح، لم يُدمج بعد |
+| [#9](https://github.com/Abdulmalik-Alajaji/eng.hudhud/pull/9) | محرك المسارات وصفحة تجربة المسارات `debug.html` | مفتوح، لم يُدمج بعد |
 
 الملفات (بحسب GitHub):
 - **#1** أضاف: `.github/workflows/deploy.yml`، `.gitignore`، `CLAUDE.md`، `PROGRESS.md`، `index.html`، `package.json`، `package-lock.json`، `tsconfig.json`، `vite.config.ts`، `data/README.md`، `materials/README.md`، `public/maps/.gitkeep`، `scripts/check-build.mjs`، `scripts/check-secrets.mjs`، `scripts/lib/build-checks.mjs` واختباره، `scripts/lib/secrets.mjs` واختباره، `src/main.ts`، `src/app.ts` واختباره، `src/data/demo.ts` واختباره، `src/demo-banner.ts`، `src/index-html.test.ts`، `src/styles/main.css`، و4 ملفات خط في `src/assets/fonts/` مع رخصتها. وعدّل `README.md`.
@@ -48,7 +48,7 @@
 - **#5** عدّل: `CLAUDE.md`، `PROGRESS.md`، `src/app.ts` واختباره، `src/hudhud/hudhud.ts`، `src/preview.ts`.
 - **#7** أضاف: `data/buildings.json`، `data/links.json`، `data/doctors.json`، و6 ملفات في `data/floors/` (`B1-G` و`B1-F` و`B1-S` و`B2-G` و`B2-F` و`B2-S`)، `public/maps/demo-campus.svg`، `src/data/types.ts`، `src/data/validate.ts` واختباره، `src/data/dataset.ts`. وعدّلت `CLAUDE.md` و`PROGRESS.md` و`data/README.md` و`src/data/demo.ts`.
 - **#8** عدّل: `CLAUDE.md`، `PROGRESS.md`، `src/hudhud/rig.ts` واختباره، `src/hudhud/cycle.ts` واختباره، `src/hudhud/scene.ts`.
-- **المرحلة 3** أضافت: `src/route/graph.ts`، `src/route/route.ts` واختباره `route.test.ts`، `src/route/directions.ts`، `debug.html`، `src/debug.ts`، `src/styles/debug.css`. وعدّلت `CLAUDE.md` و`PROGRESS.md` و`vite.config.ts`.
+- **#9** أضاف: `src/route/graph.ts`، `src/route/route.ts` واختباره `route.test.ts`، `src/route/directions.ts`، `debug.html`، `src/debug.ts`، `src/styles/debug.css`. وعدّلت `CLAUDE.md` و`PROGRESS.md` و`vite.config.ts`.
 
 الحالة الفنية عند التسليم: `npm run verify` ينجح محلياً (129 اختباراً، فحص الأسرار، فحص البناء: الموقع 0.22 ميجا من 5، والهوية 20.3 كيلوبايت من 150).
 
