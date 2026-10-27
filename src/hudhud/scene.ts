@@ -2,6 +2,7 @@ import { easeInOutSine, easeOutBack } from './easing';
 import { APPROACH, type BoltEvent, type Cycle, type Level, LEVELS, PULSE_ON, type StrikeTarget, boltIntensity, buildCycle } from './cycle';
 import { type BoltShape, generateBolt } from './lightning';
 import { createRandom } from './random';
+import { DARK_PALETTE, type HudhudPalette, STRIKE_LIGHT, hexToRgb, mix } from './palette';
 import { type Matrix, type PartName, type Pose, REST_POSE, drawRig, worldPoint } from './rig';
 import type { Point } from './rig-data';
 
@@ -51,24 +52,12 @@ interface PlacedCycle {
   cycle: Cycle;
 }
 
-export interface Colors {
-  bird: string;
-  bolt: string;
-  halo: string;
-}
+/** ألوان الهدهد وصواعقه (من متغيرات CSS، انظر palette.ts). */
+export type Colors = HudhudPalette;
 
-function hexToRgb(hex: string): [number, number, number] | null {
-  const m = /^#([0-9a-f]{6})$/i.exec(hex.trim());
-  if (!m) return null;
-  const n = parseInt(m[1] as string, 16);
-  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
-}
-
-function tint(hex: string, amount: number): string {
-  const rgb = hexToRgb(hex);
-  if (!rgb || amount <= 0) return hex;
-  const [r, g, b] = rgb.map((c) => Math.round(c + (255 - c) * Math.min(1, amount)));
-  return `rgb(${r}, ${g}, ${b})`;
+/** «r, g, b» للون، أو للون الاحتياطي إن لم يكن بصيغة #rrggbb. */
+function rgbOf(hex: string, fallback: string): string {
+  return (hexToRgb(hex) ?? hexToRgb(fallback) ?? [255, 255, 255]).join(', ');
 }
 
 /** مشهد الهدهد: يبني الدورات بالتتابع ويرسم أي لحظة زمنية. نفس البذرة = نفس المشهد. */
@@ -219,8 +208,9 @@ export class HudhudScene {
     // الوميض حول الهدهد فقط (يتلاشى قبل حافة الـ canvas).
     if (intensity > 0.01) {
       const ambient = ctx.createRadialGradient(...AMBIENT_CENTER, 0, ...AMBIENT_CENTER, AMBIENT_RADIUS);
-      ambient.addColorStop(0, `rgba(200, 225, 255, ${config.ambient * intensity})`);
-      ambient.addColorStop(1, 'rgba(200, 225, 255, 0)');
+      const tone = rgbOf(colors.ambient, DARK_PALETTE.ambient);
+      ambient.addColorStop(0, `rgba(${tone}, ${config.ambient * intensity})`);
+      ambient.addColorStop(1, `rgba(${tone}, 0)`);
       ctx.fillStyle = ambient;
       ctx.fillRect(AMBIENT_CENTER[0] - AMBIENT_RADIUS, AMBIENT_CENTER[1] - AMBIENT_RADIUS, AMBIENT_RADIUS * 2, AMBIENT_RADIUS * 2);
     }
@@ -232,14 +222,19 @@ export class HudhudScene {
       const target = this.boltShape(bolt, origin, pose).main.at(-1) as Point;
       const radius = 190;
       const glow = ctx.createRadialGradient(...target, 0, ...target, radius);
-      glow.addColorStop(0, `rgba(255, 255, 255, ${config.glow * level})`);
-      glow.addColorStop(0.35, `rgba(170, 210, 255, ${config.glow * 0.45 * level})`);
-      glow.addColorStop(1, 'rgba(170, 210, 255, 0)');
+      const ring = rgbOf(colors.glow, DARK_PALETTE.glow);
+      glow.addColorStop(0, `rgba(${rgbOf(colors.halo, DARK_PALETTE.halo)}, ${config.glow * level})`);
+      glow.addColorStop(0.35, `rgba(${ring}, ${config.glow * 0.45 * level})`);
+      glow.addColorStop(1, `rgba(${ring}, 0)`);
       ctx.fillStyle = glow;
       ctx.fillRect(target[0] - radius, target[1] - radius, radius * 2, radius * 2);
     }
 
-    drawRig(ctx, view, pose, tint(colors.bird, intensity * 0.3), debug);
+    // يضيء الهدهد قليلاً لحظة الضربة (كل جزء بلونه): يميل إلى colors.lit (الأبيض في الداكن).
+    const lit = intensity * STRIKE_LIGHT;
+    const tint = (color: string): string => mix(color, colors.lit, lit);
+    const parts = Object.fromEntries(Object.entries(colors.parts ?? {}).map(([part, color]) => [part, tint(color)]));
+    drawRig(ctx, view, pose, tint(colors.bird), debug, { parts, stripes: colors.stripes });
     ctx.setTransform(view[0], view[1], view[2], view[3], view[4], view[5]);
 
     for (const { bolt, local, origin } of bolts) {
@@ -269,13 +264,13 @@ export class HudhudScene {
     };
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
+    const halo = rgbOf(colors.halo, DARK_PALETTE.halo);
     const layers: [number, string, number][] = [
-      [7, 'rgba(255, 255, 255, ALPHA)', 0.1],
-      [3.2, 'rgba(160, 205, 255, ALPHA)', 0.35],
+      [7, `rgba(${halo}, ALPHA)`, 0.1],
+      [3.2, `rgba(${rgbOf(colors.haze, DARK_PALETTE.haze)}, ALPHA)`, 0.35],
+      [1, `rgba(${rgbOf(colors.bolt, DARK_PALETTE.bolt)}, ALPHA)`, 1],
+      [0.42, `rgba(${halo}, ALPHA)`, 0.95],
     ];
-    const rgb = hexToRgb(colors.bolt) ?? [77, 157, 255];
-    layers.push([1, `rgba(${rgb.join(', ')}, ALPHA)`, 1]);
-    layers.push([0.42, 'rgba(255, 255, 255, ALPHA)', 0.95]);
     for (const [factor, color, alpha] of layers) {
       ctx.strokeStyle = fade(alpha * level, color);
       ctx.lineWidth = width * factor;
@@ -301,7 +296,8 @@ export class HudhudScene {
     // الشرارات تنطلق من نقطة الضربة لحظة الضربة، ثم تطير مستقلة عن الهدهد.
     const target = this.aimedBolt(bolt, origin).shape.main.at(-1) as Point;
     ctx.lineCap = 'round';
-    const rgb = hexToRgb(colors.bolt) ?? [77, 157, 255];
+    const rgb = rgbOf(colors.bolt, DARK_PALETTE.bolt);
+    const spark = rgbOf(colors.spark, DARK_PALETTE.spark);
     const position = (vx: number, vy: number, s: number): Point => {
       const k = (1 - Math.exp(-DRAG * s)) / DRAG;
       return [target[0] + vx * k, target[1] + vy * k + GRAVITY * (s / DRAG - k / DRAG)];
@@ -319,7 +315,7 @@ export class HudhudScene {
       const head = position(vx, vy, s);
       const tail = position(vx, vy, Math.max(0, s - 0.028));
       const alpha = (1 - dt / life) ** 1.4;
-      ctx.strokeStyle = white ? `rgba(255, 255, 255, ${alpha})` : `rgba(${rgb.join(', ')}, ${alpha})`;
+      ctx.strokeStyle = white ? `rgba(${spark}, ${alpha})` : `rgba(${rgb}, ${alpha})`;
       ctx.lineWidth = 1.4 * pxToUnits;
       ctx.beginPath();
       ctx.moveTo(...tail);
