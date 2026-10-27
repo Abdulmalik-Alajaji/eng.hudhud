@@ -132,7 +132,7 @@
   height: 64px;
 }
 
-/* ---------- مقارنة ألوان المظهر الفاتح (للاختيار) ---------- */
+/* ---------- الهدهد في المظهرين: الفاتح (البيج) والداكن جنباً إلى جنب ---------- */
 
 /* ألوان المظهر الفاتح نفسها (main.css تحت [data-theme='light']) */
 .compare {
@@ -186,6 +186,18 @@
   border-radius: 14px;
   /* الصواعق تأتي من خارج الهدهد: تُقص عند حدود البطاقة */
   overflow: hidden;
+}
+
+/* ألوان الداكن (main.css تحت :root) */
+.compare-option--dark {
+  --bg: #000000;
+  --border: #1c2630;
+  --text: #f2f6fa;
+  --muted: #8d9aa6;
+
+  background: var(--bg);
+  color: var(--text);
+  color-scheme: dark;
 }
 
 .compare-option h3 {

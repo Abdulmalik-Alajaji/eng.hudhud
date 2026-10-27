@@ -60,7 +60,8 @@
 
 /*
  * المظهر الفاتح بلون البيج (اختياري، طلب الفريق في الجلسة الرابعة). يُفعَّل من src/theme.ts في واجهة الطلاب فقط.
- * الهدهد والصواعق والخريطة بألوانها المعتمدة نفسها، والأزرار والروابط بأزرق أغمق ليُقرأ على البيج.
+ * الأزرار والروابط بأزرق أغمق ليُقرأ على البيج. الهدهد بألوانه الطبيعية وصواعق ذهبية (الخيار «أ» الذي
+ * اعتمده الفريق، LIGHT_PALETTE في src/hudhud/palette.ts)، والخريطة داكنة بألوانها المعتمدة (map.css).
  */
 :root[data-theme='light'] {
   --bg: #f4ecdc;
@@ -74,6 +75,16 @@
   --on-accent: #ffffff;
   --error: #a3261c;
   --error-border: #c4453a;
+  --hudhud-color: #b5652b;
+  --hudhud-legs: #5a4636;
+  --hudhud-stripes: #3b2716;
+  --hudhud-lit: #c98a1c;
+  --bolt-color: #a86a12;
+  --bolt-halo: #fff4d6;
+  --bolt-haze: #e0a93a;
+  --bolt-glow-tint: #f0c46a;
+  --bolt-ambient: #ffd98a;
+  --bolt-spark: #c98a1c;
   color-scheme: light;
 }
 

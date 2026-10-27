@@ -6,9 +6,19 @@
  */
 
 .map {
-  /* الخريطة داكنة بألوانها المعتمدة في المظهرين (الفاتح لا يغيّرها) */
+  /* الخريطة داكنة بألوانها المعتمدة في المظهرين (الفاتح لا يغيّرها)، والهدهد عليها بألوانه الداكنة */
   --bg: #000000;
   --text: #f2f6fa;
+  --hudhud-color: #4fc3f7;
+  --hudhud-legs: initial;
+  --hudhud-stripes: initial;
+  --hudhud-lit: #ffffff;
+  --bolt-color: #4d9dff;
+  --bolt-halo: #ffffff;
+  --bolt-haze: #a0cdff;
+  --bolt-glow-tint: #aad2ff;
+  --bolt-ambient: #c8e1ff;
+  --bolt-spark: #ffffff;
   position: relative;
   width: 100%;
   border-radius: 12px;

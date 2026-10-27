@@ -1,7 +1,7 @@
 import './styles/main.css';
 import './styles/preview.css';
 import { createHudhud, createHudhudShape, hudhudController, type HudhudOptions, type HudhudVariant } from './hudhud/hudhud';
-import { BEIGE, LIGHT_NATURAL, LIGHT_NAVY, contrast, paletteVars, type HudhudPalette } from './hudhud/palette';
+import { BEIGE, DARK_PALETTE, LIGHT_PALETTE, contrast, paletteVars, type HudhudPalette } from './hudhud/palette';
 
 function el<K extends keyof HTMLElementTagNameMap>(
   tag: K,
@@ -64,9 +64,15 @@ function contrastRow(label: string, color: string, background = BEIGE): HTMLElem
   return row;
 }
 
-/** خيار لألوان المظهر الفاتح: الهدهد المعتمد (قوي) وعلامة الوجهة على البيج، مع أرقام التباين. */
-function lightOption(title: string, note: string, palette: HudhudPalette, contrasts: [string, string, string?][]): HTMLElement {
-  const option = el('article', 'compare-option');
+/** الهدهد المعتمد (قوي) وعلامة الوجهة بألوان مظهر واحد، ونسب التباين إن وُجدت. */
+function themeCard(
+  title: string,
+  note: string,
+  palette: HudhudPalette,
+  dark: boolean,
+  contrasts: [string, string, string?][] = [],
+): HTMLElement {
+  const option = el('article', dark ? 'compare-option compare-option--dark' : 'compare-option');
   for (const [name, value] of Object.entries(paletteVars(palette))) {
     if (value) option.style.setProperty(name, value);
   }
@@ -78,51 +84,44 @@ function lightOption(title: string, note: string, palette: HudhudPalette, contra
   const marker = createHudhud('still', 'الوجهة');
   marker.classList.add('compare-option__marker');
   const still = el('div', 'compare-option__still');
-  still.append(marker, el('span', undefined, 'علامة الوجهة، ومع «تقليل الحركة»'));
+  still.append(marker, el('span', undefined, 'الهدهد الثابت (ومع «تقليل الحركة»)'));
 
-  const list = el('dl', 'compare-option__contrasts');
-  list.append(...contrasts.map(([label, color, background]) => contrastRow(label, color, background)));
-  option.append(
-    el('h3', undefined, title),
-    stage,
-    el('p', 'compare-option__name', 'هدهد الهندسة'),
-    still,
-    el('p', 'compare-option__note', note),
-    el('p', 'compare-option__label', 'التباين مع البيج (المطلوب 3 على الأقل):'),
-    list,
-  );
+  option.append(el('h3', undefined, title), stage, el('p', 'compare-option__name', 'هدهد الهندسة'), still, el('p', 'compare-option__note', note));
+  if (contrasts.length > 0) {
+    const list = el('dl', 'compare-option__contrasts');
+    list.append(...contrasts.map(([label, color, background]) => contrastRow(label, color, background)));
+    option.append(el('p', 'compare-option__label', 'التباين مع البيج (المطلوب 3 على الأقل):'), list);
+  }
   return option;
 }
 
-function lightComparison(): HTMLElement {
+function themes(): HTMLElement {
   const section = el('section', 'compare');
   section.setAttribute('aria-labelledby', 'compare-title');
-  const heading = el('h2', undefined, 'لون الهدهد في المظهر الفاتح: اختر (أ) أو (ب)');
+  const heading = el('h2', undefined, 'الهدهد في المظهرين');
   heading.id = 'compare-title';
   const options = el('div', 'compare__options');
   options.append(
-    lightOption(
-      'الخيار (أ): ألوان طبيعية',
-      'هدهد قرفي برتقالي دافئ، وخطوط بنية داكنة على الذيل، وساقان بنيتان، وصواعق ذهبية كهرمانية.',
-      LIGHT_NATURAL,
+    themeCard(
+      'الفاتح (البيج)',
+      'الخيار «أ» الذي اعتمده الفريق: هدهد قرفي برتقالي دافئ، وخطوط بنية داكنة على الذيل، وساقان بنيتان، وصواعق ذهبية كهرمانية.',
+      LIGHT_PALETTE,
+      false,
       [
-        ['الهدهد', LIGHT_NATURAL.bird],
-        ['الساقان', LIGHT_NATURAL.parts?.legs ?? LIGHT_NATURAL.bird],
-        ['الخطوط على الذيل', LIGHT_NATURAL.stripes ?? LIGHT_NATURAL.bird, LIGHT_NATURAL.bird],
-        ['قلب الصاعقة', LIGHT_NATURAL.bolt],
+        ['الهدهد', LIGHT_PALETTE.bird],
+        ['الساقان', LIGHT_PALETTE.parts?.legs ?? LIGHT_PALETTE.bird],
+        ['الخطوط على الذيل', LIGHT_PALETTE.stripes ?? LIGHT_PALETTE.bird, LIGHT_PALETTE.bird],
+        ['قلب الصاعقة', LIGHT_PALETTE.bolt],
       ],
     ),
-    lightOption('الخيار (ب): كحلي', 'كحلي داكن هادئ، وصواعق ذهبية كهرمانية.', LIGHT_NAVY, [
-      ['الهدهد', LIGHT_NAVY.bird],
-      ['قلب الصاعقة', LIGHT_NAVY.bolt],
-    ]),
+    themeCard('الداكن (الأساس)', 'هدهد أزرق سماوي، وصواعق زرقاء بتوهج أبيض.', DARK_PALETTE, true),
   );
   section.append(
     heading,
     el(
       'p',
       'compare__intro',
-      'على خلفية المظهر الفاتح نفسها. لم يُطبَّق أي منهما على الموقع بعد، والمظهر الداكن لا يتغير. الخريطة تبقى داكنة بألوانها المعتمدة في المظهرين.',
+      'الطالب يبدّل بينهما بزر «فاتح/داكن». الخريطة تبقى داكنة في المظهرين، والهدهد عليها بألوان الداكن.',
     ),
     options,
   );
@@ -162,7 +161,7 @@ function render(root: HTMLElement): void {
     card('أيقونة المتصفح', 'بأحجام 16 و32 و64 بكسل.', iconSizes()),
   );
 
-  root.replaceChildren(header, lightComparison(), grid);
+  root.replaceChildren(header, themes(), grid);
 }
 
 const root = document.getElementById('app');
