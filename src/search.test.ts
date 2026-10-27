@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { loadDataset } from './data/dataset';
-import { createIndex, datasetEntries, normalizeText, search } from './search';
+import { createIndex, datasetEntries, nameMatches, normalizeText, search } from './search';
 
 describe('normalizeText', () => {
   it('يوحّد الهمزات والتاء المربوطة والألف المقصورة', () => {
@@ -98,5 +98,32 @@ describe('datasetEntries على البيانات التجريبية', () => {
 
   it('المكان يذكر مبناه وطابقه', () => {
     expect(entries.find((e) => e.value === 'B1-G-PR1')?.detail).toBe('المبنى 1 · الطابق الأرضي');
+  });
+});
+
+describe('nameMatches (بحث المعالم)', () => {
+  it('أي جزء من الاسم', () => {
+    expect(nameMatches('المكتبة المركزية', 'مكتبة')).toBe(true);
+    expect(nameMatches('المكتبة المركزية', 'مركز')).toBe(true);
+    expect(nameMatches('المكتبة المركزية', 'مسرح')).toBe(false);
+  });
+
+  it('يتجاهل الهمزات والتاء المربوطة والألف المقصورة والتشكيل والمسافات الزائدة', () => {
+    expect(nameMatches('المدخل الرئيسي', 'الرييسي')).toBe(true);
+    expect(nameMatches('الإدارة', 'الاداره')).toBe(true);
+    expect(nameMatches('آمنة', 'امنه')).toBe(true);
+    expect(nameMatches('المصلى', 'مصلي')).toBe(true);
+    expect(nameMatches('المكتبة', 'المَكْتَبَة')).toBe(true);
+    expect(nameMatches('المدخل الرئيسي', '   المدخل    الرئيسي  ')).toBe(true);
+  });
+
+  it('أكثر من كلمة: كلها يجب أن توجد، بأي ترتيب', () => {
+    expect(nameMatches('الممر إلى كلية العلوم', 'العلوم ممر')).toBe(true);
+    expect(nameMatches('الممر إلى كلية العلوم', 'ممر الهندسة')).toBe(false);
+  });
+
+  it('النص الفارغ يطابق كل شيء', () => {
+    expect(nameMatches('المسرح', '')).toBe(true);
+    expect(nameMatches('المسرح', '  ')).toBe(true);
   });
 });

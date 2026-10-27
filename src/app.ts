@@ -12,7 +12,7 @@ import { distance } from './route/directions';
 import { buildGraph } from './route/graph';
 import { encodeTap, parseStart, parseTarget } from './route/link';
 import { findRoute, type Leg, type Route } from './route/route';
-import { createIndex, datasetEntries, placeEntry, search, type SearchEntry, type SearchIndex } from './search';
+import { createIndex, datasetEntries, nameMatches, normalizeText, placeEntry, search, type SearchEntry, type SearchIndex } from './search';
 
 export const APP_TITLE = 'هدهد الهندسة';
 export const APP_TAGLINE = 'دليلك إلى قاعات كلية الهندسة ومكاتبها ومرافقها';
@@ -50,6 +50,8 @@ interface Planner {
   level: Level;
   fromQuery: string;
   toQuery: string;
+  /** ما كُتب في بحث المعالم. */
+  landmarkQuery: string;
 }
 
 function el<K extends keyof HTMLElementTagNameMap>(tag: K, className?: string, text?: string): HTMLElementTagNameMap[K] {
@@ -68,6 +70,16 @@ function button(text: string, className: string, onClick: () => void): HTMLButto
 
 /** «خريطة واحدة»، «خريطتان»، «3 خرائط». */
 const mapCount = (n: number): string => (n === 1 ? 'خريطة واحدة' : n === 2 ? 'خريطتان' : `${n} خرائط`);
+
+/** «معلم واحد»، «معلمان»، «3 معالم»، «11 معلماً». */
+export function landmarkCount(n: number): string {
+  if (n === 1) return 'معلم واحد';
+  if (n === 2) return 'معلمان';
+  const rest = n % 100;
+  return rest >= 3 && rest <= 10 ? `${n} معالم` : `${n} معلماً`;
+}
+
+export const NO_LANDMARK = 'لا يوجد معلم بهذا الاسم';
 
 /** إزالة مستمعي النسخة السابقة إذا رُسمت الواجهة من جديد في العنصر نفسه. */
 const cleanups = new WeakMap<HTMLElement, () => void>();
@@ -100,7 +112,7 @@ export function renderApp(root: HTMLElement, options: AppOptions): void {
   const landmarks = dataset.floors.flatMap((f) => f.places.filter((p) => p.landmark).map((p) => placeEntry(dataset, p, f)));
   const floorOfLevel = (level: Level): Floor => dataset.floors.find((f) => f.level === level) as Floor;
 
-  const planner: Planner = { from: null, to: null, lift: false, method: 'near', level: 'G', fromQuery: '', toQuery: '' };
+  const planner: Planner = { from: null, to: null, lift: false, method: 'near', level: 'G', fromQuery: '', toQuery: '', landmarkQuery: '' };
   /** الرابط الذي تعرضه الشاشة الآن، حتى لا تُرسم مرتين حين يصل popstate وhashchange معاً. */
   let shown: string | null = null;
   /** وصل الطالب إلى الطريق من النموذج، فزر «عدّل» يرجع خطوة في سجل المتصفح بدل إضافة خطوة. */
@@ -244,6 +256,58 @@ export function renderApp(root: HTMLElement, options: AppOptions): void {
     );
   };
 
+  /**
+   * قائمة المعالم مع بحث فوقها يصفّيها أثناء الكتابة (بلا نت: كل شيء في الصفحة). إن لم يطابق شيء
+   * تبقى القائمة كاملة تحت «لا يوجد معلم بهذا الاسم». النتيجة تُقرأ لقارئ الشاشة (aria-live).
+   */
+  const landmarkPicker = (): HTMLElement => {
+    const box = el('div', 'landmarks');
+    const label = el('label', 'search__label', 'ابحث في المعالم');
+    label.htmlFor = 'landmark-search';
+    const input = el('input', 'search__input');
+    input.id = 'landmark-search';
+    input.type = 'search';
+    input.placeholder = 'مثل المكتبة أو المدخل';
+    input.autocomplete = 'off';
+    input.spellcheck = false;
+    input.enterKeyHint = 'search';
+    input.value = planner.landmarkQuery;
+    input.setAttribute('aria-controls', 'landmark-list');
+    input.setAttribute('aria-describedby', 'landmark-status');
+    const status = el('p', 'landmarks__status');
+    status.id = 'landmark-status';
+    status.setAttribute('role', 'status');
+    status.setAttribute('aria-live', 'polite');
+    const list = el('ul', 'results results--landmarks');
+    list.id = 'landmark-list';
+
+    const item = (entry: SearchEntry): HTMLLIElement => {
+      const li = el('li');
+      const pick = el('button', 'result');
+      pick.type = 'button';
+      pick.append(el('span', 'result__title', entry.title), el('span', 'result__detail', entry.detail));
+      pick.addEventListener('click', () => {
+        planner.from = choiceOf(entry);
+        renderPlanner();
+      });
+      li.append(pick);
+      return li;
+    };
+    const update = (): void => {
+      planner.landmarkQuery = input.value;
+      const typed = normalizeText(input.value) !== '';
+      const matches = landmarks.filter((entry) => nameMatches(entry.title, input.value));
+      const none = typed && matches.length === 0;
+      status.textContent = !typed ? '' : none ? NO_LANDMARK : landmarkCount(matches.length);
+      status.classList.toggle('landmarks__status--none', none);
+      list.replaceChildren(...(none ? landmarks : matches).map(item));
+    };
+    input.addEventListener('input', update);
+    box.append(label, input, status, list);
+    update();
+    return box;
+  };
+
   const renderPlanner = (): void => {
     plannerRoot.replaceChildren();
 
@@ -289,20 +353,7 @@ export function renderApp(root: HTMLElement, options: AppOptions): void {
         }),
       );
     } else if (!planner.from && planner.method === 'landmark') {
-      const list = el('ul', 'results results--landmarks');
-      for (const entry of landmarks) {
-        const item = el('li');
-        const pick = el('button', 'result');
-        pick.type = 'button';
-        pick.append(el('span', 'result__title', entry.title), el('span', 'result__detail', entry.detail));
-        pick.addEventListener('click', () => {
-          planner.from = choiceOf(entry);
-          renderPlanner();
-        });
-        item.append(pick);
-        list.append(item);
-      }
-      where.body.append(el('p', 'hint', 'اختر أقرب معلم إليك.'), list);
+      where.body.append(el('p', 'hint', 'اختر أقرب معلم إليك.'), landmarkPicker());
     }
 
     // 2. إلى أين؟

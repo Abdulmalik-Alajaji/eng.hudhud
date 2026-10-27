@@ -22,6 +22,18 @@ export function normalizeText(text: string): string {
     .trim();
 }
 
+/**
+ * هل يطابق الاسم ما كتبه الطالب؟ أي جزء من الاسم («مكتبة» تجد «المكتبة المركزية»)، بلا فروق الهمزات
+ * والتاء المربوطة والألف المقصورة والتشكيل والمسافات الزائدة. إن كتب أكثر من كلمة فكلها يجب أن توجد.
+ * النص الفارغ يطابق كل شيء.
+ */
+export function nameMatches(name: string, query: string): boolean {
+  const q = normalizeText(query);
+  if (!q) return true;
+  const n = normalizeText(name);
+  return q.split(' ').every((word) => n.includes(word));
+}
+
 /** الرمز بلا مسافات ولا شرطات: B1-F215 ← b1f215. */
 const compact = (text: string): string => normalizeText(text).replace(/ /g, '');
 
