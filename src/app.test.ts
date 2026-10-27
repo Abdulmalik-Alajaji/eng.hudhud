@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { APP_TITLE, renderApp } from './app';
+import { APP_TITLE, landmarkCount, renderApp } from './app';
 import { loadDataset } from './data/dataset';
 import { DEMO_BANNER_TEXT } from './demo-banner';
 
@@ -114,6 +114,46 @@ describe('renderApp', () => {
     click(root, '.leg__nav .btn', 'السابق');
     expect(hashParams().get('leg')).toBeNull();
     expect(root.querySelector('.leg__title')?.textContent).toBe('الطابق الأرضي');
+  });
+
+  it('بحث المعالم يصفّي القائمة أثناء الكتابة بلا فروق الهمزات والتاء المربوطة', () => {
+    renderApp(root, { demo: false, dataset });
+    click(root, '.tabs__button', 'معلم');
+    const all = root.querySelectorAll('.results--landmarks .result').length;
+    expect(all).toBeGreaterThan(3);
+    const input = root.querySelector<HTMLInputElement>('#landmark-search');
+    expect(input?.labels?.[0]?.textContent).toBe('ابحث في المعالم');
+    expect(input?.getAttribute('aria-controls')).toBe('landmark-list');
+
+    type(root, '#landmark-search', 'مكتبه');
+    const titles = [...root.querySelectorAll('.results--landmarks .result__title')].map((t) => t.textContent);
+    expect(titles).toEqual(['المكتبة']);
+    const status = root.querySelector('#landmark-status');
+    expect(status?.getAttribute('aria-live')).toBe('polite');
+    expect(status?.textContent).toBe('معلم واحد');
+
+    // «مدخل» جزء من «المدخل الرئيسي» و«المدخل الشرقي» و«مدخل المبنى 2»، والمسافات الزائدة لا تؤثر.
+    type(root, '#landmark-search', '  مدخل ');
+    expect(root.querySelectorAll('.results--landmarks .result').length).toBe(3);
+    expect(status?.textContent).toBe('3 معالم');
+  });
+
+  it('بحث المعالم بلا تطابق: «لا يوجد معلم بهذا الاسم» والقائمة كاملة تحته، والاختيار يعمل', () => {
+    renderApp(root, { demo: false, dataset });
+    click(root, '.tabs__button', 'معلم');
+    const all = root.querySelectorAll('.results--landmarks .result').length;
+    type(root, '#landmark-search', 'مسبح');
+    expect(root.querySelector('#landmark-status')?.textContent).toBe('لا يوجد معلم بهذا الاسم');
+    expect(root.querySelectorAll('.results--landmarks .result').length).toBe(all);
+    type(root, '#landmark-search', '');
+    expect(root.querySelector('#landmark-status')?.textContent).toBe('');
+    type(root, '#landmark-search', 'كافتيريا');
+    click(root, '.results--landmarks .result', 'الكافتيريا');
+    expect(root.querySelector('.choice__title')?.textContent).toBe('الكافتيريا');
+  });
+
+  it('عدد المعالم بقواعد العدد العربية', () => {
+    expect([1, 2, 3, 10, 11, 100].map(landmarkCount)).toEqual(['معلم واحد', 'معلمان', '3 معالم', '10 معالم', '11 معلماً', '100 معلماً']);
   });
 
   it('رمز القاعة بأحرف صغيرة وEnter يختار أول نتيجة', () => {
