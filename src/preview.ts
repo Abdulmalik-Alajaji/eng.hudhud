@@ -1,6 +1,7 @@
 import './styles/main.css';
 import './styles/preview.css';
 import { createHudhud, createHudhudShape, hudhudController, type HudhudOptions, type HudhudVariant } from './hudhud/hudhud';
+import { BEIGE, LIGHT_NATURAL, LIGHT_NAVY, contrast, paletteVars, type HudhudPalette } from './hudhud/palette';
 
 function el<K extends keyof HTMLElementTagNameMap>(
   tag: K,
@@ -55,6 +56,79 @@ function iconSizes(): HTMLElement {
   return row;
 }
 
+/** نسبة التباين مع البيج (أو مع لون آخر) وعلامة نجاحها. */
+function contrastRow(label: string, color: string, background = BEIGE): HTMLElement {
+  const row = el('div', 'compare-option__contrast');
+  const ratio = contrast(color, background);
+  row.append(el('dt', undefined, label), el('dd', undefined, `${ratio.toFixed(1)} ${ratio >= 3 ? '✓' : '✗'}`));
+  return row;
+}
+
+/** خيار لألوان المظهر الفاتح: الهدهد المعتمد (قوي) وعلامة الوجهة على البيج، مع أرقام التباين. */
+function lightOption(title: string, note: string, palette: HudhudPalette, contrasts: [string, string, string?][]): HTMLElement {
+  const option = el('article', 'compare-option');
+  for (const [name, value] of Object.entries(paletteVars(palette))) {
+    if (value) option.style.setProperty(name, value);
+  }
+  const hudhud = createHudhud('strong', 'هدهد الهندسة', { seed: fixedSeed });
+  animated.push(hudhud);
+  const stage = el('div', 'compare-option__stage');
+  stage.append(hudhud);
+
+  const marker = createHudhud('still', 'الوجهة');
+  marker.classList.add('compare-option__marker');
+  const still = el('div', 'compare-option__still');
+  still.append(marker, el('span', undefined, 'علامة الوجهة، ومع «تقليل الحركة»'));
+
+  const list = el('dl', 'compare-option__contrasts');
+  list.append(...contrasts.map(([label, color, background]) => contrastRow(label, color, background)));
+  option.append(
+    el('h3', undefined, title),
+    stage,
+    el('p', 'compare-option__name', 'هدهد الهندسة'),
+    still,
+    el('p', 'compare-option__note', note),
+    el('p', 'compare-option__label', 'التباين مع البيج (المطلوب 3 على الأقل):'),
+    list,
+  );
+  return option;
+}
+
+function lightComparison(): HTMLElement {
+  const section = el('section', 'compare');
+  section.setAttribute('aria-labelledby', 'compare-title');
+  const heading = el('h2', undefined, 'لون الهدهد في المظهر الفاتح: اختر (أ) أو (ب)');
+  heading.id = 'compare-title';
+  const options = el('div', 'compare__options');
+  options.append(
+    lightOption(
+      'الخيار (أ): ألوان طبيعية',
+      'هدهد قرفي برتقالي دافئ، وخطوط بنية داكنة على الذيل، وساقان بنيتان، وصواعق ذهبية كهرمانية.',
+      LIGHT_NATURAL,
+      [
+        ['الهدهد', LIGHT_NATURAL.bird],
+        ['الساقان', LIGHT_NATURAL.parts?.legs ?? LIGHT_NATURAL.bird],
+        ['الخطوط على الذيل', LIGHT_NATURAL.stripes ?? LIGHT_NATURAL.bird, LIGHT_NATURAL.bird],
+        ['قلب الصاعقة', LIGHT_NATURAL.bolt],
+      ],
+    ),
+    lightOption('الخيار (ب): كحلي', 'كحلي داكن هادئ، وصواعق ذهبية كهرمانية.', LIGHT_NAVY, [
+      ['الهدهد', LIGHT_NAVY.bird],
+      ['قلب الصاعقة', LIGHT_NAVY.bolt],
+    ]),
+  );
+  section.append(
+    heading,
+    el(
+      'p',
+      'compare__intro',
+      'على خلفية المظهر الفاتح نفسها. لم يُطبَّق أي منهما على الموقع بعد، والمظهر الداكن لا يتغير. الخريطة تبقى داكنة بألوانها المعتمدة في المظهرين.',
+    ),
+    options,
+  );
+  return section;
+}
+
 function render(root: HTMLElement): void {
   const header = el('header', 'preview-header');
   header.append(
@@ -88,7 +162,7 @@ function render(root: HTMLElement): void {
     card('أيقونة المتصفح', 'بأحجام 16 و32 و64 بكسل.', iconSizes()),
   );
 
-  root.replaceChildren(header, grid);
+  root.replaceChildren(header, lightComparison(), grid);
 }
 
 const root = document.getElementById('app');

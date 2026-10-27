@@ -2,7 +2,8 @@ import './hudhud.css';
 import type { Level } from './cycle';
 import type { Matrix } from './rig';
 import { HUDHUD_HEIGHT, HUDHUD_PATH, HUDHUD_WIDTH } from './shape';
-import { HudhudScene, SCENE, SCENE_HEIGHT, SCENE_WIDTH } from './scene';
+import { readPalette } from './palette';
+import { type Colors, HudhudScene, SCENE, SCENE_HEIGHT, SCENE_WIDTH } from './scene';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 /** دقة الرسم القصوى (ضعف دقة الشاشة)، وتنخفض تلقائياً إذا كان الجهاز بطيئاً. */
@@ -94,7 +95,7 @@ export function createHudhud(
   let visible = true;
   let onScreen = true;
   let manualPause = false;
-  let colors: { bird: string; bolt: string; halo: string } | null = null;
+  let colors: Colors | null = null;
   const reduced = prefersReducedMotion();
   let quality = PIXEL_RATIOS.findIndex((r) => r <= (window.devicePixelRatio || 1));
   if (quality < 0) quality = PIXEL_RATIOS.length - 1;
@@ -112,14 +113,8 @@ export function createHudhud(
       canvas.width = width;
       canvas.height = height;
     }
-    if (!colors) {
-      const style = getComputedStyle(root);
-      colors = {
-        bird: style.getPropertyValue('--hudhud-color').trim() || '#4fc3f7',
-        bolt: style.getPropertyValue('--bolt-color').trim() || '#4d9dff',
-        halo: style.getPropertyValue('--bolt-halo').trim() || '#ffffff',
-      };
-    }
+    // الألوان من متغيرات CSS (palette.ts)، وتُقرأ من جديد إذا تغيّر المظهر.
+    if (!colors) colors = readPalette(getComputedStyle(root));
     const k = width / SCENE_WIDTH;
     const view: Matrix = [k, 0, 0, k, -SCENE.left * k, -SCENE.top * k];
     scene.render(ctx, time, view, ratio / k, colors, options.debug);
@@ -164,6 +159,14 @@ export function createHudhud(
       }
     }
   };
+
+  // تبديل المظهر (داكن/فاتح) يغيّر متغيرات الألوان: نقرؤها من جديد ونعيد الرسم فوراً.
+  if (typeof MutationObserver === 'function') {
+    new MutationObserver(() => {
+      colors = null;
+      draw();
+    }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  }
 
   document.addEventListener('visibilitychange', () => {
     visible = document.visibilityState !== 'hidden';

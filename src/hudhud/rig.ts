@@ -123,6 +123,40 @@ const DEBUG_COLORS: Record<PartName, string> = {
   crest: '#fd79a8',
 };
 
+/** ألوان اختيارية لكل جزء، وخطوط على الذيل (لوحة المظهر الفاتح، انظر palette.ts). */
+export interface RigStyle {
+  parts?: Partial<Record<PartName, string>>;
+  stripes?: string;
+}
+
+/**
+ * خطوط عرضية على الذيل، داخل حدوده فقط (لا تغيّر شكله): عمودية على محوره من مفصله إلى طرفه،
+ * كخطوط ذيل الهدهد الحقيقي.
+ */
+function drawTailStripes(ctx: CanvasRenderingContext2D, tail: Path2D, color: string): void {
+  const [jx, jy] = RIG_JOINTS.tail;
+  const axis = Math.atan2(TAIL_TIP[1] - jy, TAIL_TIP[0] - jx);
+  const along: Point = [Math.cos(axis), Math.sin(axis)];
+  const across: Point = [-along[1], along[0]];
+  ctx.save();
+  ctx.clip(tail, 'evenodd');
+  ctx.strokeStyle = color;
+  ctx.lineWidth = TAIL_STRIPE.width;
+  for (let d = TAIL_STRIPE.start; d < TAIL_STRIPE.end; d += TAIL_STRIPE.gap) {
+    const cx = jx + along[0] * d;
+    const cy = jy + along[1] * d;
+    ctx.beginPath();
+    ctx.moveTo(cx - across[0] * 200, cy - across[1] * 200);
+    ctx.lineTo(cx + across[0] * 200, cy + across[1] * 200);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+/** طرف الذيل التقريبي في مساحة الشكل (لاتجاه الخطوط فقط). */
+const TAIL_TIP: Point = [690, 600];
+const TAIL_STRIPE = { start: 70, end: 240, gap: 46, width: 14 };
+
 /** يرسم الهدهد. view: تحويل مساحة الشكل إلى بكسلات الـ canvas. debug: كل جزء بلون مع مفاصله. */
 export function drawRig(
   ctx: CanvasRenderingContext2D,
@@ -130,16 +164,18 @@ export function drawRig(
   pose: Pose,
   color: string,
   debug = false,
+  style: RigStyle = {},
 ): void {
   const matrices = partMatrices(pose);
   const shapes = partPaths();
   for (const name of PART_ORDER) {
     const m = multiply(view, matrices[name]);
     ctx.setTransform(m[0], m[1], m[2], m[3], m[4], m[5]);
-    ctx.fillStyle = debug ? DEBUG_COLORS[name] : color;
+    ctx.fillStyle = debug ? DEBUG_COLORS[name] : (style.parts?.[name] ?? color);
     if (debug) ctx.globalAlpha = 0.85;
     ctx.fill(shapes[name], 'evenodd');
     ctx.globalAlpha = 1;
+    if (name === 'tail' && style.stripes && !debug) drawTailStripes(ctx, shapes.tail, style.stripes);
   }
   if (debug) {
     const joints: [PartName, Point][] = [
