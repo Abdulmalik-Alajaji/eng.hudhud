@@ -553,3 +553,22 @@
   align-items: center;
   gap: 8px;
 }
+
+/* ---------- بحث المعالم ---------- */
+
+.landmarks {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.landmarks__status {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.landmarks__status--none {
+  color: var(--text);
+  font-weight: 700;
+}
